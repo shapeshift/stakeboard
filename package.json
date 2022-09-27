@@ -27,6 +27,7 @@
     "@visx/tooltip": "^2.10.0",
     "dayjs": "^1.11.5",
     "framer-motion": "^7.4.0",
+    "gh-pages": "^4.0.0",
     "node-polyglot": "^2.4.2",
     "numeral": "^2.0.6",
     "react": "^18.2.0",
@@ -40,7 +41,9 @@
     "start": "PORT=3001 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy" : "yarn run build",
+    "deploy" : "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
