@@ -1,4 +1,4 @@
-import { Box, Button } from "@chakra-ui/react";
+import { Box, Button, Heading } from "@chakra-ui/react";
 import { Graph } from "components/Graph/Graph";
 import { HistoryTimeframe } from "components/Graph/HistoryTimeFrame";
 import { HistoryData } from "components/Graph/PrimaryChart/PrimaryChart";
@@ -18,12 +18,20 @@ const GraphLayout = () => {
       price: 50,
       date: 1661608836220,
     },
+    {
+      price: 80,
+      date: 1661608836720,
+    },
+    {
+      price: 200,
+      date: 1661608826720,
+    },
   ];
 
   return (
     <>
       <TimeControls onChange={() => {}} defaultTime={HistoryTimeframe.MONTH} />
-
+      <Heading mt="10" size="md">Delegations over time</Heading>
       <Box height={"350px"}>
         <Graph color={"red.500"} data={data} loading={false} isLoaded={true} />
       </Box>

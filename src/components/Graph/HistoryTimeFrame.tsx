@@ -5,4 +5,5 @@ export enum HistoryTimeframe {
   MONTH = "1M",
   YEAR = "1Y",
   ALL = "All",
+  CUSTOM = "CUSTOM",
 }
