@@ -4,15 +4,13 @@ import { HistoryTimeframe } from "components/Graph/HistoryTimeFrame";
 import { Box, Button, Heading, HStack } from "@chakra-ui/react";
 
 type TimeControlsProps = {
-  onChange: (arg: HistoryTimeframe) => void;
+  setTimeFrame: (arg: HistoryTimeframe) => void;
   defaultTime: HistoryTimeframe;
-  buttonGroupProps?: ButtonGroupProps;
 };
 
 export const TimeControls = ({
-  onChange,
+  setTimeFrame,
   defaultTime,
-  buttonGroupProps,
 }: TimeControlsProps) => {
   const options = Object.freeze([
     { value: HistoryTimeframe.HOUR, label: "1H" },
@@ -25,15 +23,13 @@ export const TimeControls = ({
   ]);
   return (
     <Box>
-      <Heading mt="10" size="md">Time controls</Heading>
+      <Heading mt="10" size="md">
+        Time controls
+      </Heading>
       <HStack mt="10" spacing={2}>
-      {options.map((opt) => {
-        return (
-          <Button minW="70px">
-            {opt.label}
-          </Button>
-        );
-      })}
+        {options.map((opt) => {
+          return <Button minW="70px" onClick={() => setTimeFrame(opt.value)}>{opt.label}</Button>;
+        })}
       </HStack>
     </Box>
   );

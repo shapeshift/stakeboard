@@ -1,3 +1,6 @@
+import { HistoryData } from "components/Graph/PrimaryChart/PrimaryChart";
+import _ from "lodash";
+
 export interface StakingData {
   label: string;
   usage: number;
@@ -33,3 +36,15 @@ export const getStakerData = (): StakingData[] => {
     },
   ];
 };
+
+export const getHistoryData = () => {
+    const now = Date.now()
+    var array = Array.from(Array(1000).keys(),n=>n+1);
+    const historyData: HistoryData[] = array.map(x => {
+        return {
+            date: now - (x*86400000), // milis in one day
+            price: Math.floor(Math.random() * 100)
+        }
+    })
+    return historyData
+}
