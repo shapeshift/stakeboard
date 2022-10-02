@@ -1,6 +1,6 @@
 import type { ButtonGroupProps } from "@chakra-ui/button";
-import { Radio } from "components/Radio/Radio";
-import { HistoryTimeframe } from "components/Graph/HistoryTimeFrame";
+import { Radio } from "components/imported/Radio/Radio";
+import { HistoryTimeframe } from "components/imported/Graph/HistoryTimeFrame";
 import { Box, Button, Heading, HStack } from "@chakra-ui/react";
 
 type TimeControlsProps = {

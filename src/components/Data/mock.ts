@@ -1,4 +1,4 @@
-import { HistoryData } from "components/Graph/PrimaryChart/PrimaryChart";
+import { HistoryData } from "components/imported/Graph/PrimaryChart/PrimaryChart";
 import _ from "lodash";
 
 export interface StakingData {

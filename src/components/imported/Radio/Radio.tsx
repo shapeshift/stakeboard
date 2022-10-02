@@ -13,7 +13,7 @@ import {
   useRadioGroup,
 } from "@chakra-ui/react";
 import type { ThemeTypings } from "@chakra-ui/styled-system";
-import { HistoryTimeframe } from "components/Graph/HistoryTimeFrame";
+import { HistoryTimeframe } from "components/imported/Graph/HistoryTimeFrame";
 import type { InterpolationOptions } from "node-polyglot";
 import type Polyglot from "node-polyglot";
 import { memo } from "react";

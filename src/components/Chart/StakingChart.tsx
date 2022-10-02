@@ -1,5 +1,5 @@
 import { getStakerData, getStakingData, StakerData, StakingData } from "components/Data/mock";
-import PieChart from "./Graph";
+import PieChart from "./PieChart";
 import { scaleOrdinal } from "@visx/scale";
 import { colors } from '../../theme/colors'
 

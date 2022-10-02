@@ -2,7 +2,7 @@
 /* eslint-disable import/no-default-export */
 import { Center, Container, HStack } from '@chakra-ui/react'
 import { createElement } from 'react'
-import { RawText } from 'components/Text'
+import { RawText } from 'components/imported/Text'
 
 import { AssetsIcon } from './Assets'
 import { CircleIcon } from './Circle'

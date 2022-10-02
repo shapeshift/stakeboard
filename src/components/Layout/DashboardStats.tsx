@@ -13,8 +13,7 @@ import {
   Heading,
   Flex,
 } from "@chakra-ui/react";
-import { StakerChart, StakingChart } from "components/PieChart/Chart";
-import PieChart from "components/PieChart/Graph";
+import { StakerChart, StakingChart } from "components/Chart/StakingChart";
 
 const Stats = () => {
   return (
@@ -68,7 +67,7 @@ const DelegatedStats = () => {
         py={{ base: 20, md: 28 }}
         direction={{ base: "column" }}
       >
-        <Heading size="lg">ATOM Delegated</Heading>
+        <Heading size="md">ATOM Delegated</Heading>
         <Stack>
           <Stat>
             <StatLabel>Total</StatLabel>
@@ -95,7 +94,7 @@ const StakersStats = () => {
         py={{ base: 20, md: 28 }}
         direction={{ base: "column" }}
       >
-        <Heading size="lg">Unique stakers</Heading>
+        <Heading size="md">Unique stakers</Heading>
         <Stack>
           <Stat>
             <StatLabel>Total</StatLabel>
