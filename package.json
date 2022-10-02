@@ -2,11 +2,13 @@
   "name": "stakeboard",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://lmyslinski.github.io/stakeboard",
   "dependencies": {
     "@chakra-ui/icons": "^2.0.10",
     "@chakra-ui/react": "^2.3.4",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
+    "@react-spring/web": "^9.5.5",
     "@storybook/react": "^6.5.12",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
@@ -22,6 +24,7 @@
     "@visx/event": "^2.6.0",
     "@visx/gradient": "^2.10.0",
     "@visx/group": "^2.10.0",
+    "@visx/mock-data": "^2.1.2",
     "@visx/responsive": "^2.10.0",
     "@visx/shape": "^2.12.2",
     "@visx/tooltip": "^2.10.0",
@@ -42,8 +45,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "predeploy" : "react-scripts build",
-    "deploy" : "gh-pages -d build"
+    "predeploy": "react-scripts build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
