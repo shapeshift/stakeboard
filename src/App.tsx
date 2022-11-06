@@ -9,8 +9,9 @@ function App() {
 
   const [data, setData] = useState({});
   const loadData = useCallback(async () => {
-      const fetchData = getFullValidatorHistory()
-      return fetchData;
+      // const fetchData = getFullValidatorHistory()
+      // return fetchData;
+      return [];
   }, []);
 
   useEffect(() => {

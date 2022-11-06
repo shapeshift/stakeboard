@@ -34,20 +34,16 @@
     "gh-pages": "^4.0.0",
     "node-polyglot": "^2.4.2",
     "numeral": "^2.0.6",
-    "react": "^18.2.0",
-    "react-app-rewired": "^2.2.1",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
     "typescript": "^4.4.2",
     "web-vitals": "^2.1.0"
   },
   "scripts": {
-    "start": "PORT=3001 react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "predeploy": "react-scripts build",
-    "deploy": "gh-pages -d build"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "eslintConfig": {
     "extends": [
