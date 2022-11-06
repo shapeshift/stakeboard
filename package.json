@@ -3,6 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "homepage": "https://lmyslinski.github.io/stakeboard",
+  "scripts": {
+    "dev": "next dev -p 8080",
+    "build": "next build",
+    "start": "next start"
+  },
   "dependencies": {
     "@chakra-ui/icons": "^2.0.10",
     "@chakra-ui/react": "^2.3.4",
@@ -10,15 +15,9 @@
     "@emotion/styled": "^11.10.4",
     "@react-spring/web": "^9.5.5",
     "@storybook/react": "^6.5.12",
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^13.0.0",
-    "@testing-library/user-event": "^13.2.1",
     "@types/jest": "^27.0.1",
-    "@types/node": "^16.7.13",
     "@types/node-polyglot": "^2.4.2",
     "@types/numeral": "^2.0.2",
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
     "@visx/axis": "^2.12.2",
     "@visx/curve": "^2.1.0",
     "@visx/event": "^2.6.0",
@@ -31,39 +30,18 @@
     "axios": "^1.1.3",
     "dayjs": "^1.11.5",
     "framer-motion": "^7.4.0",
-    "gh-pages": "^4.0.0",
+    "ioredis": "^5.2.4",
+    "next": "latest",
     "node-polyglot": "^2.4.2",
     "numeral": "^2.0.6",
-    "next": "latest",
     "react": "latest",
-    "react-dom": "latest",
-    "typescript": "^4.4.2",
-    "web-vitals": "^2.1.0"
-  },
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "react-dom": "latest"
   },
   "devDependencies": {
-    "@types/d3-array": "^3.0.3"
+    "@types/d3-array": "^3.0.3",
+    "@types/node": "^18.11.9",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "typescript": "^4.4.2"
   }
 }
