@@ -1,16 +1,10 @@
+import { LAST_TX_TIMESTAMP, TX_COLLECTION, CURSOR, pageSize, SYNC_COMPLETE, VALIDATOR_ADDR } from "@/lib/const";
+import { CosmosTxResponse } from "@/lib/types";
 import axios from "axios";
 import Redis from "ioredis";
 import _ from "lodash";
 import { NextApiRequest, NextApiResponse } from "next";
-import { CosmosTxResponse } from "../../lib/types";
-import {
-  LAST_TX_TIMESTAMP,
-  TX_COLLECTION,
-  CURSOR,
-  pageSize,
-  SYNC_COMPLETE,
-  VALIDATOR_ADDR,
-} from "./const";
+
 
 const redis = new Redis();
 
