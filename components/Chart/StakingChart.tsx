@@ -1,7 +1,7 @@
 import { getStakerData, getStakingData, StakerData, StakingData } from "components/Data/mock";
 import PieChart from "./PieChart";
 import { scaleOrdinal } from "@visx/scale";
-import { colors } from '../../theme/colors'
+import { colors } from "src/theme/colors";
 
 export const StakingChart = () => {
   const data = getStakingData();

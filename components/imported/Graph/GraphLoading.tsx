@@ -1,6 +1,6 @@
 import { useColorModeValue } from '@chakra-ui/system'
 import { getColor } from '@chakra-ui/theme-tools'
-import { theme } from 'theme/theme'
+import { theme } from 'src/theme/theme'
 
 export const GraphLoading = () => {
   const startColor = useColorModeValue('gray.300', 'gray.600')

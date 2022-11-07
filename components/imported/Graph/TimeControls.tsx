@@ -13,7 +13,6 @@ export const TimeControls = ({
   defaultTime,
 }: TimeControlsProps) => {
   const options = Object.freeze([
-    { value: HistoryTimeframe.HOUR, label: "1H" },
     { value: HistoryTimeframe.DAY, label: "24H" },
     { value: HistoryTimeframe.WEEK, label: "1W" },
     { value: HistoryTimeframe.MONTH, label: "1M" },

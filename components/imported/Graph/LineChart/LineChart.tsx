@@ -4,7 +4,7 @@ import { AxisBottom, AxisLeft } from '@visx/axis'
 import { Group } from '@visx/group'
 import { LinePath } from '@visx/shape'
 import React from 'react'
-import { colors } from 'theme/colors'
+import { colors } from 'src/theme/colors'
 import { HistoryData } from '../PrimaryChart/PrimaryChart'
 
 export interface LineChartProps {

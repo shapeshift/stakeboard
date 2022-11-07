@@ -10,7 +10,7 @@ import { bisector, extent, max, min } from 'd3-array'
 import dayjs from 'dayjs'
 import numeral from 'numeral'
 import React, { useCallback, useMemo } from 'react'
-import { colors } from 'theme/colors'
+import { colors } from 'src/theme/colors'
 
 import { AreaChart } from '../AreaChart/AreaChart'
 import { LineChart } from '../LineChart/LineChart'

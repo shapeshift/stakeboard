@@ -15,6 +15,7 @@ export interface Tx {
     gasWanted:     string;
     index:         number;
     value:         string;
+    memo:          string;
     messages:      MessageElement[];
     events:        { [key: string]: Event };
 }

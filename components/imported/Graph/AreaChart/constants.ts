@@ -1,4 +1,4 @@
-import { colors } from 'theme/colors'
+import { colors } from "src/theme/colors"
 
 export const AXIS_COLOR = colors.gray[500]
 export const AXIS_BOTTOM_TICK_LABEL_PROPS = {
