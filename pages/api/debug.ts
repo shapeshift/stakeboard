@@ -12,10 +12,20 @@ export default async function handler(
 ) {
   const timestamp = Number(await redis.get(LAST_TX_TIMESTAMP));
   const dataSize = await redis.llen(TX_COLLECTION);
-  const allTx = await redis.lrange(TX_COLLECTION, 0, -1);
+  const allTx = await redis.lrange(TX_COLLECTION, 10, -1);
   const txData: Tx[] = allTx.map((str) => JSON.parse(str));
   const firstTx = _.min(txData.map(tx => tx.timestamp)) as number
   const lastTx = _.max(txData.map(tx => tx.timestamp)) as number
+
+
+  const delegated =  txData.filter(p => p.memo === "").filter((tx) => tx.memo === "Delegated with ShapeShift");
+
+  const qq = delegated.filter(tx => tx.events[0]["unbond"] !== undefined)
+  const qq2 = txData.filter(tx => tx.events[0]["unbond"] !== undefined)
+
+  console.log(qq.length)
+  console.log(qq2.length)
+   
 
   // res.status(200).json({
   //   size: dataSize,
@@ -25,7 +35,7 @@ export default async function handler(
   //   lastTx: readableTimestamp(lastTx),
   // });
   res.status(200).json({
-    memos: _.uniq(txData.map(x => x.memo))
+    events: (txData.map(x => x.events))
   })
 }
 
