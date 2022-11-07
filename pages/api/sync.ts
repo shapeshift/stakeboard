@@ -1,5 +1,5 @@
 import { LAST_TX_TIMESTAMP, TX_COLLECTION, CURSOR, pageSize, SYNC_COMPLETE, VALIDATOR_ADDR } from "@/lib/const";
-import { CosmosTxResponse } from "@/lib/types";
+import { CosmosTxResponse } from "@/lib/unchained";
 import axios from "axios";
 import Redis from "ioredis";
 import _ from "lodash";

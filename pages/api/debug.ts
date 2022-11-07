@@ -1,7 +1,7 @@
 import Redis from "ioredis";
 import _ from "lodash";
 import { NextApiRequest, NextApiResponse } from "next";
-import { Tx } from "../../lib/types";
+import { Tx } from "../../lib/unchained";
 import { LAST_TX_TIMESTAMP, TX_COLLECTION } from "@/lib/const";
 
 const redis = new Redis();

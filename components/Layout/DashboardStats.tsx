@@ -1,3 +1,4 @@
+import { CoinStats } from "@/lib/history";
 import {
   Stat,
   StatLabel,
@@ -58,7 +59,7 @@ const Stats = () => {
   );
 };
 
-const DelegatedStats = () => {
+const DelegatedStats = ({coinStats}: IDashboardStats) => {
   return (
     <Box>
       <Stack
@@ -71,7 +72,7 @@ const DelegatedStats = () => {
         <Stack>
           <Stat>
             <StatLabel>Total</StatLabel>
-            <StatNumber>34.344 ATOM</StatNumber>
+            <StatNumber>{coinStats.totalStaked.toFixed(2)} {coinStats.coin}</StatNumber>
           </Stat>
           <Stat>
             <StatLabel>Shapeshift</StatLabel>
@@ -112,7 +113,11 @@ const StakersStats = () => {
   );
 };
 
-const DashboardStats = () => (
+interface IDashboardStats{
+  coinStats: CoinStats
+}
+
+const DashboardStats = ({coinStats}: IDashboardStats) => (
   <Box>
     <Stack
       align={"center"}
@@ -121,7 +126,7 @@ const DashboardStats = () => (
       direction={{ base: "column", xl: "row" }}
     >
       <Stats />
-      <DelegatedStats />
+      <DelegatedStats coinStats={coinStats} />
       <StakersStats />
     </Stack>
   </Box>

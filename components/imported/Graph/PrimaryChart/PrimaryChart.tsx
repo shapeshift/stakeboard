@@ -1,3 +1,4 @@
+import { HistoryData } from '@/lib/history'
 import { useColorModeValue } from '@chakra-ui/color-mode'
 import { useToken } from '@chakra-ui/system'
 import { localPoint } from '@visx/event'
@@ -15,11 +16,6 @@ import { colors } from 'src/theme/colors'
 import { AreaChart } from '../AreaChart/AreaChart'
 import { LineChart } from '../LineChart/LineChart'
 
-export declare type HistoryData = {
-  price: number;
-  date: number;
-};
-
 export interface PrimaryChartProps {
   data: HistoryData[]
   width: number
@@ -29,9 +25,9 @@ export interface PrimaryChartProps {
 }
 
 // accessors
-const getDate = (d: HistoryData) => new Date(d.date)
-const getStockValue = (d: HistoryData) => d?.price || 0
-const bisectDate = bisector<HistoryData, Date>(d => new Date(d.date)).left
+const getDate = (d: HistoryData) => new Date(d.timestamp)
+const getStockValue = (d: HistoryData) => d?.amount  || 0
+const bisectDate = bisector<HistoryData, Date>(d => new Date(d.timestamp)).left
 
 export const PrimaryChart = ({
   data,
@@ -60,8 +56,8 @@ export const PrimaryChart = ({
 
   const minPrice = Math.min(...data.map(getStockValue))
   const maxPrice = Math.max(...data.map(getStockValue))
-  const maxPriceIndex = data.findIndex(x => x.price === maxPrice)
-  const minPriceIndex = data.findIndex(x => x.price === minPrice)
+  const maxPriceIndex = data.findIndex(x => x.amount === maxPrice)
+  const minPriceIndex = data.findIndex(x => x.amount === minPrice)
 
   // scales
   const dateScale = useMemo(() => {
@@ -217,11 +213,11 @@ export const PrimaryChart = ({
           >
             <ul style={{ padding: '0', margin: '0', listStyle: 'none' }}>
               <li>
-                <label>{tooltipData.price}</label>
+                <label>{tooltipData.amount}</label>
                 {/* <Amount.Fiat fontWeight='bold' fontSize='lg' my={2} value={tooltipData.price} /> */}
               </li>
               <li style={{ paddingBottom: '0.25rem', fontSize: '12px', color: colors.gray[500] }}>
-                {dayjs(getDate(tooltipData)).format('LLL')}
+                {dayjs(getDate(tooltipData)).format('DD/MM/YYYY HH:mm:ss')}
               </li>
             </ul>
           </TooltipWithBounds>

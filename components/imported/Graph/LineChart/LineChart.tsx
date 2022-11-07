@@ -1,3 +1,4 @@
+import { HistoryData } from '@/lib/history'
 import { useColorModeValue } from '@chakra-ui/react'
 import type { AxisScale } from '@visx/axis'
 import { AxisBottom, AxisLeft } from '@visx/axis'
@@ -5,7 +6,6 @@ import { Group } from '@visx/group'
 import { LinePath } from '@visx/shape'
 import React from 'react'
 import { colors } from 'src/theme/colors'
-import { HistoryData } from '../PrimaryChart/PrimaryChart'
 
 export interface LineChartProps {
   data: HistoryData[]
@@ -55,8 +55,8 @@ export const LineChart = ({
   }
   if (!data) return null
   // accessors
-  const getDate = (d: HistoryData) => new Date(d?.date)
-  const getStockValue = (d: HistoryData) => d?.price
+  const getDate = (d: HistoryData) => new Date(d?.timestamp)
+  const getStockValue = (d: HistoryData) => d?.amount
 
   if (width < 10) return null
   return (
