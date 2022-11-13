@@ -27,7 +27,7 @@ export const TimeControls = ({
       </Heading>
       <HStack mt="10" spacing={2}>
         {options.map((opt) => {
-          return <Button minW="70px" onClick={() => setTimeFrame(opt.value)}>{opt.label}</Button>;
+          return <Button key={opt.value} minW="70px" onClick={() => setTimeFrame(opt.value)}>{opt.label}</Button>;
         })}
       </HStack>
     </Box>
