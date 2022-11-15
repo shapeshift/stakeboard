@@ -23,9 +23,6 @@ export default async function handler(
   const qq = delegated.filter(tx => tx.events[0]["unbond"] !== undefined)
   const qq2 = txData.filter(tx => tx.events[0]["unbond"] !== undefined)
 
-  console.log(qq.length)
-  console.log(qq2.length)
-   
 
   // res.status(200).json({
   //   size: dataSize,

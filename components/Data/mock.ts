@@ -1,4 +1,4 @@
-import { HistoryData } from "components/imported/Graph/PrimaryChart/PrimaryChart";
+import { HistoryData } from "@/lib/history";
 import _ from "lodash";
 
 export interface StakingData {
@@ -42,8 +42,8 @@ export const getHistoryData = () => {
     var array = Array.from(Array(1000).keys(),n=>n+1);
     const historyData: HistoryData[] = array.map(x => {
         return {
-            date: now - (x*86400000), // milis in one day
-            price: Math.floor(Math.random() * 100)
+            timestamp: now - (x*86400000), // milis in one day
+            amount: Math.floor(Math.random() * 100)
         }
     })
     return historyData

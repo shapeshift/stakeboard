@@ -132,7 +132,7 @@ const syncFullHistory = async () => {
 // this is implicitly handled by the sync mechanism - on the first /sync call after a failure it simply picks up where it left off
 export const getTx = async (cursor?: string): Promise<CosmosTxResponse> => {
   const { data } = await axios.get(
-    `http://localhost:3000/api/v1/validators/${VALIDATOR_ADDR}/txs`,
+    `http://api.cosmos.localhost/api/v1/validators/${VALIDATOR_ADDR}/txs`,
     { params: { cursor: cursor, pageSize: pageSize } }
   );
   return data;

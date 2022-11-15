@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "https://lmyslinski.github.io/stakeboard",
   "scripts": {
-    "dev": "next dev -p 8080",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start"
   },
