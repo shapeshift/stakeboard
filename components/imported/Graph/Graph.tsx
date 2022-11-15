@@ -1,10 +1,11 @@
+import { HistoryData } from '@/lib/history'
 import { Center, Fade, SlideFade } from '@chakra-ui/react'
 import { ParentSize } from '@visx/responsive'
 import { isEmpty } from 'lodash'
 import { useMemo } from 'react'
 
 import { GraphLoading } from './GraphLoading'
-import { HistoryData, PrimaryChart } from './PrimaryChart/PrimaryChart'
+import { PrimaryChart } from './PrimaryChart/PrimaryChart'
 
 
 type GraphProps = {

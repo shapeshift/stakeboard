@@ -6,25 +6,29 @@ import _ from "lodash";
 import { NextApiRequest, NextApiResponse } from "next";
 
 
-const redis = new Redis();
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+
+  const redis = new Redis({
+    host: process.env.REDIS_HOST || "localhost",
+  });
+
   const lastTxTimestamp = await redis.get(LAST_TX_TIMESTAMP);
-  const completed = await isSyncCompleted();
+  const completed = await isSyncCompleted(redis);
 
   // There's two high-level cases to consider: whether we do we have the history backfill completed or not.
   // If not, we start with fetching the validator history (till "start of time") and on subsequent syncs only focus on loading new data
   if (!completed) {
-    handleIncompleteHistory(lastTxTimestamp, res);
+    handleIncompleteHistory(redis, lastTxTimestamp, res);
   } else {
-    handleCompleteHistory(Number(lastTxTimestamp), res);
+    handleCompleteHistory(redis, Number(lastTxTimestamp), res);
   }
 }
 
 const handleCompleteHistory = async (
+  redis: Redis,
   lastTxTimestamp: number,
   res: NextApiResponse
 ) => {
@@ -33,7 +37,7 @@ const handleCompleteHistory = async (
 
   if (maxTimestamp != Number(lastTxTimestamp)) {
     console.log("Timestamps differ, getting missing transaction data");
-    loadNewTx(unchainedTxResponse, lastTxTimestamp);
+    loadNewTx(redis, unchainedTxResponse, lastTxTimestamp);
     res
       .status(200)
       .json({ message: "Timestamps differ, getting missing transaction data" });
@@ -48,9 +52,11 @@ const handleCompleteHistory = async (
 // if found, load only the the new data into the db
 // if not found, load the entire page and move on to the next one
 const loadNewTx = async (
+  redis: Redis,
   unchainedTxResponse: CosmosTxResponse,
   lastTxTimestamp: number
 ) => {
+  
   const matchingTx = unchainedTxResponse.txs.find(
     (tx) => tx.timestamp === lastTxTimestamp
   );
@@ -71,21 +77,22 @@ const loadNewTx = async (
 };
 
 const handleIncompleteHistory = async (
+  redis: Redis,
   lastTxTimestamp: string | null,
   res: NextApiResponse
 ) => {
   if (lastTxTimestamp != null) {
     console.log("History sync started but not completed, resuming");
-    syncFullHistory();
+    syncFullHistory(redis);
     res.status(200).json({ message: "Completing full history sync" });
   } else {
-    await startHistorySync();
+    await startHistorySync(redis);
     res.status(200).json({ message: "Starting full history sync" });
   }
 };
 
 // loads the latest transactions, set the LAST_TX_TIMESTAMP, CURSOR and run sync loop in background
-const startHistorySync = async () => {
+const startHistorySync = async (redis: Redis) => {
   console.log("Last timestamp not found, syncing full history");
 
   const unchainedTxResponse = await getTx();
@@ -99,13 +106,13 @@ const startHistorySync = async () => {
   console.log(`Setting ${LAST_TX_TIMESTAMP} to ${maxTimestamp}`);
   await redis.set(LAST_TX_TIMESTAMP, maxTimestamp);
   // lack of await is on purpose here
-  syncFullHistory();
+  syncFullHistory(redis);
 };
 
-const syncFullHistory = async () => {
+const syncFullHistory = async (redis: Redis) => {
   const cursor: string = (await redis.get(CURSOR)) || "";
 
-  if (!(await isSyncCompleted())) {
+  if (!(await isSyncCompleted(redis))) {
     console.log(`Sync not yet completed, getting a page for cursor ${cursor}`);
 
     const unchainedTxResponse = await getTx(cursor);
@@ -122,7 +129,7 @@ const syncFullHistory = async () => {
     console.log(
       `Saved ${txStrings.length} txs, moving cursor`
     );
-    await syncFullHistory();
+    await syncFullHistory(redis);
   } else {
     console.log("Completed full history sync");
   }
@@ -132,10 +139,10 @@ const syncFullHistory = async () => {
 // this is implicitly handled by the sync mechanism - on the first /sync call after a failure it simply picks up where it left off
 export const getTx = async (cursor?: string): Promise<CosmosTxResponse> => {
   const { data } = await axios.get(
-    `http://api.cosmos.localhost/api/v1/validators/${VALIDATOR_ADDR}/txs`,
+    `${process.env.UNCHAINED_HOST}/api/v1/validators/${VALIDATOR_ADDR}/txs`,
     { params: { cursor: cursor, pageSize: pageSize } }
   );
   return data;
 };
 
-const isSyncCompleted = async () => (await redis.get(SYNC_COMPLETE)) === "true";
+const isSyncCompleted = async (redis: Redis) => (await redis.get(SYNC_COMPLETE)) === "true";

@@ -1,11 +1,11 @@
 
+import { HistoryData } from '@/lib/history'
 import type { AxisScale } from '@visx/axis'
 import { AxisBottom, AxisLeft } from '@visx/axis'
 import { LinearGradient } from '@visx/gradient'
 import { Group } from '@visx/group'
 import { AreaClosed } from '@visx/shape'
 import React from 'react'
-import { HistoryData } from '../PrimaryChart/PrimaryChart'
 
 import { AXIS_BOTTOM_TICK_LABEL_PROPS, AXIS_COLOR, AXIS_LEFT_TICK_LABEL_PROPS } from './constants'
 
@@ -40,8 +40,8 @@ export const AreaChart = ({
   children,
 }: AreaChartProps) => {
   // accessors
-  const getDate = (d: HistoryData) => new Date(d?.date)
-  const getStockValue = (d: HistoryData) => d?.price
+  const getDate = (d: HistoryData) => new Date(d?.timestamp)
+  const getStockValue = (d: HistoryData) => d?.amount
 
   if (width < 10) return null
   return (

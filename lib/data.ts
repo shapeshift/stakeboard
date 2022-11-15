@@ -5,9 +5,14 @@ import Redis from "ioredis";
 import _ from "lodash";
 import { NextApiRequest, NextApiResponse } from "next";
 
-const redis = new Redis();
 
 export const getCoinStakingData = async () => {
+
+  const redis = new Redis({
+    host: process.env.REDIS_HOST || "localhost",
+  });
+
+  
   const allTx: Tx[] = (await redis.lrange(TX_COLLECTION, 0, -1))
     .map((x) => JSON.parse(x))
     .filter((tx) => tx.memo === "Delegated with ShapeShift");

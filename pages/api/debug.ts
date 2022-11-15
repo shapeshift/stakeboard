@@ -4,12 +4,16 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { Tx } from "../../lib/unchained";
 import { LAST_TX_TIMESTAMP, TX_COLLECTION } from "@/lib/const";
 
-const redis = new Redis();
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+
+  const redis = new Redis({
+    host: process.env.REDIS_HOST || "localhost",
+  });
+
   const timestamp = Number(await redis.get(LAST_TX_TIMESTAMP));
   const dataSize = await redis.llen(TX_COLLECTION);
   const allTx = await redis.lrange(TX_COLLECTION, 10, -1);
