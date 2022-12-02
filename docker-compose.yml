@@ -7,9 +7,11 @@ services:
   syncer:
     build: 
       context: ./syncer
-      
-  # stakeboard:
-  #   build: .
-  #   ports:
-  #     - "3000:3000"
+    environment:
+      STAKEBOARD_HOST: "http://stakeboard:3000"      
+      SLEEP_DURATION: 3600
+  stakeboard:
+    build: .
+    ports:
+      - "3000:3000"
     
