@@ -1,9 +1,24 @@
 import _ from "lodash";
-import { VALIDATOR_ADDR } from "./const";
+import { ACCOUNT_ADDR, VALIDATOR_ADDR } from "./const";
+import { ValidatorDetails } from "./staking";
 import { ValidatorData } from "./types";
 import { getValidators } from "./unchained"
 
-export const getValidatorRank = async () => {
+
+export const getValidatorDetails = async (): Promise<ValidatorDetails> => {
+    const validatorRank = await getValidatorWithRank()
+
+    return {
+        apr: validatorRank.apr,
+        validatorAddress: VALIDATOR_ADDR,
+        commission: 0.1,
+        accountAddress: ACCOUNT_ADDR,
+        rank: validatorRank.rank,
+        votingPower: 0
+    }
+}
+
+export const getValidatorWithRank = async () => {
     const allValidators = await getValidators()
 
     const validators: ValidatorData[] = allValidators.validators.map(x => {

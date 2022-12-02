@@ -22,7 +22,7 @@ export const TimeControls = ({
   ]);
   return (
     <Box>
-      <Heading mt="10" size="md">
+      <Heading mt="0" size="md">
         Time controls
       </Heading>
       <HStack mt="10" spacing={2}>

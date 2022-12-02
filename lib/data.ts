@@ -4,6 +4,7 @@ import { Fee, Tx } from "@/lib/types";
 import Redis from "ioredis";
 import _ from "lodash";
 import { NextApiRequest, NextApiResponse } from "next";
+import { getValidatorDetails } from "./validator";
 
 
 const delegateMemos = [
@@ -81,6 +82,7 @@ export const getCoinStakingData = async () => {
   const totalUnstaked = _.sumBy(validatorTx.filter(p => p.type === ValidatorTxType.Unstake), x => x.amount)
 
   const historyData = getHistoryData(validatorTx);
+  const validatorDetails = await getValidatorDetails()
 
   return {
     coinStats: {
@@ -89,6 +91,7 @@ export const getCoinStakingData = async () => {
       coin: "ATOM",
     },
     historyData: historyData,
+    validatorDetails: validatorDetails
   };
 };
 

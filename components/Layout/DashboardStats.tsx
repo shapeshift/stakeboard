@@ -1,4 +1,5 @@
 import { CoinStats } from "@/lib/history";
+import { CoinStakingData, ValidatorDetails } from "@/lib/staking";
 import {
   Stat,
   StatLabel,
@@ -16,13 +17,21 @@ import {
 } from "@chakra-ui/react";
 import { StakerChart, StakingChart } from "components/Chart/StakingChart";
 
-const Stats = () => {
+
+interface IValidatorStats {
+  validatorDetails: ValidatorDetails
+}
+
+const displayPercent = (percent) => `${(percent * 100).toFixed(2)}%`;
+
+
+const ValidatorStats = ({validatorDetails}: IValidatorStats) => {
   return (
     <Box p={10}>
       <SimpleGrid columns={{ base: 4 }} spacing={10}>
         <Stat>
           <StatLabel>Validator Rank</StatLabel>
-          <StatNumber>44</StatNumber>
+          <StatNumber>{validatorDetails.rank}</StatNumber>
         </Stat>
         <Stat>
           <StatLabel>ATOM Price</StatLabel>
@@ -30,11 +39,11 @@ const Stats = () => {
         </Stat>
         <Stat>
           <StatLabel>Staking APR</StatLabel>
-          <StatNumber>17.85%</StatNumber>
+          <StatNumber>{displayPercent(validatorDetails.apr)}</StatNumber>
         </Stat>
         <Stat>
           <StatLabel>Commissions</StatLabel>
-          <StatNumber>10%</StatNumber>
+          <StatNumber>{displayPercent(validatorDetails.commission)}</StatNumber>
         </Stat>
       </SimpleGrid>
       <TableContainer mt={10}>
@@ -42,15 +51,15 @@ const Stats = () => {
           <Tbody>
             <Tr>
               <Td p="0">Voting Power</Td>
-              <Td>0.47%</Td>
+              <Td>{displayPercent(validatorDetails.votingPower)}</Td>
             </Tr>
             <Tr>
               <Td p="0">Operator Address</Td>
-              <Td>cosmosvaloper199mlc7fr6ll5t54w7tts7f4s0cvnqgc59nmuxf﻿</Td>
+              <Td>{validatorDetails.validatorAddress}</Td>
             </Tr>
             <Tr>
               <Td p="0">Address</Td>
-              <Td>cosmos199mlc7fr6ll5t54w7tts7f4s0cvnqgc5q80f26</Td>
+              <Td>{validatorDetails.accountAddress}</Td>
             </Tr>
           </Tbody>
         </Table>
@@ -59,7 +68,11 @@ const Stats = () => {
   );
 };
 
-const DelegatedStats = ({coinStats}: IDashboardStats) => {
+interface IDelegatedStats{
+  coinStats: CoinStats 
+}
+
+const DelegatedStats = ({coinStats}: IDelegatedStats) => {
   return (
     <Box>
       <Stack
@@ -85,6 +98,7 @@ const DelegatedStats = ({coinStats}: IDashboardStats) => {
     </Box>
   );
 };
+
 
 const StakersStats = () => {
   return (
@@ -114,10 +128,10 @@ const StakersStats = () => {
 };
 
 interface IDashboardStats{
-  coinStats: CoinStats
+  stakingData: CoinStakingData
 }
 
-const DashboardStats = ({coinStats}: IDashboardStats) => (
+const DashboardStats = ({stakingData}: IDashboardStats) => (
   <Box>
     <Stack
       align={"center"}
@@ -125,9 +139,9 @@ const DashboardStats = ({coinStats}: IDashboardStats) => (
       // py={{ base: 20, md: 28 }}
       direction={{ base: "column", xl: "row" }}
     >
-      <Stats />
-      <DelegatedStats coinStats={coinStats} />
-      <StakersStats />
+      <ValidatorStats validatorDetails={stakingData.validatorDetails} />
+      <DelegatedStats coinStats={stakingData.coinStats} />
+      <StakersStats  />
     </Stack>
   </Box>
 );

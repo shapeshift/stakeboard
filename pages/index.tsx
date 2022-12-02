@@ -5,22 +5,19 @@ import Header from "@/components/Layout/Header";
 import DashboardStats from "@/components/Layout/DashboardStats";
 import TimeCharts from "@/components/Layout/TimeCharts";
 import { getCoinStakingData } from "@/lib/data";
-import { CoinStakingData } from "@/lib/history";
-import { ValidatorResponse } from "@/lib/types";
-import { getValidatorRank } from "@/lib/validator";
+import { getValidatorWithRank } from "@/lib/validator";
+import { CoinStakingData } from "@/lib/staking";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
-      coinStakingData: await getCoinStakingData(),
-      validators: await getValidatorRank()
+      coinStakingData: await getCoinStakingData()
     },
   };
 };
 
 interface IHomeProps{
-  coinStakingData: CoinStakingData,
-  validators: ValidatorResponse
+  coinStakingData: CoinStakingData
 }
 
 const Home: NextPage<IHomeProps> = (props) => {
@@ -28,7 +25,7 @@ const Home: NextPage<IHomeProps> = (props) => {
     <main>                                                                          
       <Container maxW={"7xl"}>
         <Header/>
-        <DashboardStats coinStats={props.coinStakingData.coinStats}/>
+        <DashboardStats stakingData={props.coinStakingData}/>
         <TimeCharts historyData={props.coinStakingData.historyData}  />
       </Container>
     </main>
