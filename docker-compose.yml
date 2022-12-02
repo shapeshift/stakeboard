@@ -4,9 +4,10 @@ services:
     image: "redis:alpine"
     ports:
       - "6379:6379"
-  # sync-scheduler:
-  #   build: 
-  #     context: ./sync-scheduler
+  syncer:
+    build: 
+      context: ./syncer
+      
   # stakeboard:
   #   build: .
   #   ports:
