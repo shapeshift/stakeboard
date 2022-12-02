@@ -10,8 +10,10 @@ services:
     environment:
       STAKEBOARD_HOST: "http://stakeboard:3000"      
       SLEEP_DURATION: 3600
+    restart: always
   stakeboard:
     build: .
     ports:
       - "3000:3000"
+    restart: always
     

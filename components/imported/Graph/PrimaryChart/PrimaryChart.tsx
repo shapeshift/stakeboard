@@ -1,4 +1,4 @@
-import { HistoryData } from '@/lib/history'
+import { HistoryData } from '@/lib/staking'
 import { useColorModeValue } from '@chakra-ui/color-mode'
 import { useToken } from '@chakra-ui/system'
 import { localPoint } from '@visx/event'

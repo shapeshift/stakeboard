@@ -1,4 +1,4 @@
-import { HistoryData } from '@/lib/history'
+import { HistoryData } from '@/lib/staking'
 import { useColorModeValue } from '@chakra-ui/react'
 import type { AxisScale } from '@visx/axis'
 import { AxisBottom, AxisLeft } from '@visx/axis'

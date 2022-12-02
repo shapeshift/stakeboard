@@ -1,5 +1,4 @@
-import { CoinStats } from "@/lib/history";
-import { CoinStakingData, ValidatorDetails } from "@/lib/staking";
+import { CoinStakingData, CoinStats, ValidatorDetails } from "@/lib/staking";
 import {
   Stat,
   StatLabel,

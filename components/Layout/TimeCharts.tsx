@@ -1,4 +1,4 @@
-import { HistoryData } from "@/lib/history";
+import { HistoryData } from "@/lib/staking";
 import { Box, Heading } from "@chakra-ui/react";
 import { Graph } from "components/imported/Graph/Graph";
 import { HistoryTimeframe } from "components/imported/Graph/HistoryTimeFrame";

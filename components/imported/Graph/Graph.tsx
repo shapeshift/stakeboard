@@ -1,4 +1,4 @@
-import { HistoryData } from '@/lib/history'
+import { HistoryData } from '@/lib/staking'
 import { Center, Fade, SlideFade } from '@chakra-ui/react'
 import { ParentSize } from '@visx/responsive'
 import { isEmpty } from 'lodash'

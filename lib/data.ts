@@ -1,9 +1,9 @@
 import { LAST_TX_TIMESTAMP, TX_COLLECTION } from "@/lib/const";
-import { HistoryData } from "@/lib/history";
 import { Fee, Tx } from "@/lib/types";
 import Redis from "ioredis";
 import _ from "lodash";
 import { NextApiRequest, NextApiResponse } from "next";
+import { HistoryData } from "./staking";
 import { getValidatorDetails } from "./validator";
 
 

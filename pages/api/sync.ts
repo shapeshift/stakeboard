@@ -113,7 +113,7 @@ const syncFullHistory = async (redis: Redis) => {
   const cursor: string = (await redis.get(CURSOR)) || "";
 
   if (!(await isSyncCompleted(redis))) {
-    console.log(`Sync not yet completed, getting a page for cursor ${cursor}`);
+    console.log(`Sync not yet completed, getting a page for cursor ${cursor.substring(0, 10)}`);
 
     const unchainedTxResponse = await getTx(cursor);
     if (unchainedTxResponse.txs.length < pageSize) {

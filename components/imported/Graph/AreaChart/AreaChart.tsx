@@ -1,5 +1,6 @@
 
-import { HistoryData } from '@/lib/history'
+
+import { HistoryData } from '@/lib/staking'
 import type { AxisScale } from '@visx/axis'
 import { AxisBottom, AxisLeft } from '@visx/axis'
 import { LinearGradient } from '@visx/gradient'

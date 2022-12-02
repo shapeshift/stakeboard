@@ -6,8 +6,6 @@ use env_logger::Builder;
 use log::LevelFilter;
 
 
-
-
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     configure_logging();

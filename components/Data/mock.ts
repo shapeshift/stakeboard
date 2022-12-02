@@ -1,4 +1,4 @@
-import { HistoryData } from "@/lib/history";
+import { HistoryData } from "@/lib/staking";
 import _ from "lodash";
 
 export interface StakingData {
