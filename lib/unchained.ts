@@ -1,86 +1,19 @@
-export interface CosmosTxResponse {
-    pubkey: string;
-    cursor: string;
-    txs:    Tx[];
+
+import axios from "axios";
+import { VALIDATOR_ADDR } from "./const";
+import { CosmosTxResponse, ValidatorResponse } from "./types";
+
+export const getValidators = async (): Promise<ValidatorResponse> => {
+ const { data } = await axios.get(`${process.env.UNCHAINED_HOST}/api/v1/validators`)
+ return data
 }
 
-export interface Tx {
-    txid:          string;
-    blockHash:     string;
-    blockHeight:   number;
-    timestamp:     number;
-    confirmations: number;
-    fee:           Fee;
-    gasUsed:       string;
-    gasWanted:     string;
-    index:         number;
-    value:         string;
-    memo:          string;
-    messages:      MessageElement[];
-    events:        { [key: string]: Event };
-}
-
-export interface Event {
-    coin_received:        CoinReceived;
-    coin_spent:           CoinSpent;
-    message:              EventMessage;
-    transfer:             Transfer;
-    withdraw_rewards?:    WithdrawRewards;
-    withdraw_commission?: WithdrawCommission;
-}
-
-export interface CoinReceived {
-    amount:   string;
-    receiver: string;
-}
-
-export interface CoinSpent {
-    amount:  string;
-    spender: string;
-}
-
-export interface EventMessage {
-    action: string;
-    module: Module;
-    sender: string;
-}
-
-export enum Module {
-    Distribution = "distribution",
-}
-
-export interface Transfer {
-    amount:    string;
-    recipient: string;
-    sender:    string;
-}
-
-export interface WithdrawCommission {
-    amount: string;
-}
-
-export interface WithdrawRewards {
-    amount:    string;
-    validator: string;
-}
-
-export interface Fee {
-    amount: string;
-    denom:  Denom;
-}
-
-export enum Denom {
-    Uatom = "uatom",
-}
-
-export interface MessageElement {
-    origin: string;
-    from:   string;
-    to:     string;
-    type:   Type;
-    value:  Fee;
-}
-
-export enum Type {
-    WithdrawDelegatorReward = "withdraw_delegator_reward",
-}
+// This call fails every now and then due to I/O timeouts on unchained. Instead of having a retry mechanism
+// this is implicitly handled by the sync mechanism - on the first /sync call after a failure it simply picks up where it left off
+export const getTx = async (cursor?: string): Promise<CosmosTxResponse> => {
+    const { data } = await axios.get(
+      `${process.env.UNCHAINED_HOST}/api/v1/validators/${VALIDATOR_ADDR}/txs`,
+      { params: { cursor: cursor } }
+    );
+    return data;
+  };

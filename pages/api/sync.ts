@@ -1,6 +1,6 @@
 import { LAST_TX_TIMESTAMP, TX_COLLECTION, CURSOR, pageSize, SYNC_COMPLETE, VALIDATOR_ADDR } from "@/lib/const";
-import { CosmosTxResponse } from "@/lib/unchained";
-import axios from "axios";
+import { CosmosTxResponse } from "@/lib/types";
+import { getTx } from "@/lib/unchained";
 import Redis from "ioredis";
 import _ from "lodash";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -133,16 +133,6 @@ const syncFullHistory = async (redis: Redis) => {
   } else {
     console.log("Completed full history sync");
   }
-};
-
-// This call fails every now and then due to I/O timeouts on unchained. Instead of having a retry mechanism
-// this is implicitly handled by the sync mechanism - on the first /sync call after a failure it simply picks up where it left off
-export const getTx = async (cursor?: string): Promise<CosmosTxResponse> => {
-  const { data } = await axios.get(
-    `${process.env.UNCHAINED_HOST}/api/v1/validators/${VALIDATOR_ADDR}/txs`,
-    { params: { cursor: cursor, pageSize: pageSize } }
-  );
-  return data;
 };
 
 const isSyncCompleted = async (redis: Redis) => (await redis.get(SYNC_COMPLETE)) === "true";

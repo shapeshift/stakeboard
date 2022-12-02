@@ -6,22 +6,26 @@ import DashboardStats from "@/components/Layout/DashboardStats";
 import TimeCharts from "@/components/Layout/TimeCharts";
 import { getCoinStakingData } from "@/lib/data";
 import { CoinStakingData } from "@/lib/history";
+import { ValidatorResponse } from "@/lib/types";
+import { getValidatorRank } from "@/lib/validator";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
-      coinStakingData: await getCoinStakingData()
+      coinStakingData: await getCoinStakingData(),
+      validators: await getValidatorRank()
     },
   };
 };
 
 interface IHomeProps{
-  coinStakingData: CoinStakingData
+  coinStakingData: CoinStakingData,
+  validators: ValidatorResponse
 }
 
 const Home: NextPage<IHomeProps> = (props) => {
   return (
-    <main>
+    <main>                                                                          
       <Container maxW={"7xl"}>
         <Header/>
         <DashboardStats coinStats={props.coinStakingData.coinStats}/>

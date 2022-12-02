@@ -10,5 +10,5 @@ export interface CoinStats {
 
 export interface CoinStakingData {
     historyData: HistoryData[],
-    coinStats: CoinStats
+    coinStats: CoinStats,
 }
