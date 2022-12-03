@@ -5,12 +5,11 @@ services:
     ports:
       - "6379:6379"
   syncer:
-    image: lukmyslinski/dumbcron
-    build: 
-      context: ./syncer
+    image: lukmyslinski/dumbcron:1.0.0
     environment:
-      STAKEBOARD_HOST: "http://stakeboard:3000"      
+      TARGET_URL: "http://stakeboard:3000/api/sync"      
       SLEEP_DURATION: 3600
+      INITIAL_DELAY: 30
     restart: always
   stakeboard:
     build: .
