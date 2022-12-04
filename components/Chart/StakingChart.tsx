@@ -65,18 +65,3 @@ export const StakerChart = ({stakerData}: IStakersStats) => {
       />
     );
   };
-  
-
-  
-// export const getStakingData = (): StakingData[] => {
-//   return [
-//     {
-//       label: "Shapeshift",
-//       usage: 0.3,
-//     },
-//     {
-//       label: "Others",
-//       usage: 0.7,
-//     },
-//   ];
-// };

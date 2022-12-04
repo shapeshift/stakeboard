@@ -10,45 +10,30 @@ interface TimeChartProps {
   stakerData: StakerData;
 }
 
+const oneDay = 86400000;
+
+const filterData = (data, timeframe) => {
+  const now = Date.now();
+  switch (timeframe) {
+    case HistoryTimeframe.DAY:
+      return data.filter((p) => p.timestamp > now - oneDay);
+    case HistoryTimeframe.WEEK:
+      return data.filter((p) => p.timestamp > now - oneDay * 7);
+    case HistoryTimeframe.MONTH: {
+      return data.filter((p) => p.timestamp > now - oneDay * 31);;
+    }
+    case HistoryTimeframe.YEAR:
+      return data.filter((p) => p.timestamp > now - oneDay * 365);
+  }
+  return data;
+};
+
 const TimeCharts = ({ stakerData }: TimeChartProps) => {
-  const oneDay = 86400000;
+  
   const [timeframe, setTimeFrame] = useState(HistoryTimeframe.MONTH);
 
   const delegationsOverTime = stakerData.delegationsOverTime
   const stakersOverTime = stakerData.stakersOverTime
-
-  const filterDelegations = () => {
-    const now = Date.now();
-    switch (timeframe) {
-      case HistoryTimeframe.DAY:
-        return delegationsOverTime.filter((p) => p.timestamp > now - oneDay);
-      case HistoryTimeframe.WEEK:
-        return delegationsOverTime.filter((p) => p.timestamp > now - oneDay * 7);
-      case HistoryTimeframe.MONTH: {
-        return delegationsOverTime.filter((p) => p.timestamp > now - oneDay * 31);;
-      }
-      case HistoryTimeframe.YEAR:
-        return delegationsOverTime.filter((p) => p.timestamp > now - oneDay * 365);
-    }
-    return delegationsOverTime;
-  };
-
-
-  const filterStakers = () => {
-    const now = Date.now();
-    switch (timeframe) {
-      case HistoryTimeframe.DAY:
-        return stakersOverTime.filter((p) => p.timestamp > now - oneDay);
-      case HistoryTimeframe.WEEK:
-        return stakersOverTime.filter((p) => p.timestamp > now - oneDay * 7);
-      case HistoryTimeframe.MONTH: {
-        return stakersOverTime.filter((p) => p.timestamp > now - oneDay * 31);;
-      }
-      case HistoryTimeframe.YEAR:
-        return stakersOverTime.filter((p) => p.timestamp > now - oneDay * 365);
-    }
-    return stakersOverTime;
-  };
 
   return (
     <>
@@ -62,7 +47,7 @@ const TimeCharts = ({ stakerData }: TimeChartProps) => {
       <Box height={"350px"}>
         <Graph
           color={"red.500"}
-          data={filterDelegations()}
+          data={filterData(delegationsOverTime, timeframe)}
           loading={false}
           isLoaded={true}
         />
@@ -73,7 +58,7 @@ const TimeCharts = ({ stakerData }: TimeChartProps) => {
       <Box height={"350px"}>
         <Graph
           color={"red.500"}
-          data={filterStakers()}
+          data={filterData(stakersOverTime, timeframe)}
           loading={false}
           isLoaded={true}
         />
