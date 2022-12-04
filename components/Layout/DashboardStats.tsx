@@ -1,4 +1,5 @@
-import { CoinStakingData, CoinStats, ValidatorDetails } from "@/lib/staking";
+import { DashboardData, CoinStats, ValidatorDetails } from "@/lib/staking";
+import { StakerData } from "@/lib/tx/service";
 import {
   Stat,
   StatLabel,
@@ -85,7 +86,7 @@ const DelegatedStats = ({coinStats}: IDelegatedStats) => {
         <Stack>
           <Stat>
             <StatLabel>Total</StatLabel>
-            <StatNumber>{coinStats.totalStaked.toFixed(2)} {coinStats.coin}</StatNumber>
+            {/* <StatNumber>{coinStats.totalStaked.toFixed(2)} {coinStats.coin}</StatNumber> */}
           </Stat>
           <Stat>
             <StatLabel>Shapeshift</StatLabel>
@@ -99,8 +100,11 @@ const DelegatedStats = ({coinStats}: IDelegatedStats) => {
   );
 };
 
+export interface IStakersStats{
+  stakerData: StakerData
+}
 
-const StakersStats = () => {
+const StakersStats = ({stakerData}: IStakersStats) => {
   return (
     <Box>
       <Stack
@@ -113,14 +117,14 @@ const StakersStats = () => {
         <Stack>
           <Stat>
             <StatLabel>Total</StatLabel>
-            <StatNumber>30</StatNumber>
+            <StatNumber>{stakerData.totalStakers}</StatNumber>
           </Stat>
           <Stat>
             <StatLabel>Shapeshift</StatLabel>
-            <StatNumber>3</StatNumber>
+            <StatNumber>{stakerData.shapeshiftStakers}</StatNumber>
           </Stat>
         </Stack>
-        <StakerChart />
+        <StakerChart stakerData={stakerData} />
         {/* <PieChart width={300} height={300} /> */}
       </Stack>
     </Box>
@@ -128,10 +132,10 @@ const StakersStats = () => {
 };
 
 interface IDashboardStats{
-  stakingData: CoinStakingData
+  dashboardData: DashboardData
 }
 
-const DashboardStats = ({stakingData}: IDashboardStats) => (
+const DashboardStats = ({dashboardData}: IDashboardStats) => (
   <Box>
     <Stack
       align={"center"}
@@ -139,9 +143,9 @@ const DashboardStats = ({stakingData}: IDashboardStats) => (
       // py={{ base: 20, md: 28 }}
       direction={{ base: "column", xl: "row" }}
     >
-      <ValidatorStats coinStats={stakingData.coinStats} validatorDetails={stakingData.validatorDetails} />
-      <DelegatedStats coinStats={stakingData.coinStats} />
-      <StakersStats  />
+      <ValidatorStats coinStats={dashboardData.coinStats} validatorDetails={dashboardData.validatorDetails} />
+      <DelegatedStats coinStats={dashboardData.coinStats} />
+      <StakersStats stakerData={dashboardData.stakerData} />
     </Stack>
   </Box>
 );

@@ -1,5 +1,8 @@
 import { pathHorizontalLine } from "@visx/shape";
+import _ from "lodash";
+import { HistoryData } from "../staking";
 import { getAllTx, ValidatorTx, ValidatorTxType } from "./client";
+import { filterAMap, uAtomToAtom } from "./util";
 
 const delegateMemos = [
   "Delegated with ShapeShift",
@@ -12,23 +15,27 @@ const delegateMemos = [
 // Total stakers - sum the amount of staked tokens for each unique address, filter out the empty ones, take count
 // Shapeshift stakers - same but only for shapeshift memo tx
 
-type DelegatorMapEntry = {
+export type DelegatorMapEntry = {
     value: number
     type: DelegatorType,
     tx: ValidatorTx[]
 }
 
-enum DelegatorType{
+export enum DelegatorType{
     Shapeshift,
     NonShapeshift
 }
 
-export const getStakerData = async () => {
-  const allTx = await getAllTx();
-  const stakersOverTime = getStakersOverTime(allTx);
-};
+export interface StakerData {
+    totalStakers: number
+    shapeshiftStakers: number
+    stakersOverTime: HistoryData[]
+    delegationsOverTime: HistoryData[]
+}
 
-const getStakersOverTime = (allTx: ValidatorTx[]) => { 
+export const getStakerData = async (): Promise<StakerData> => {
+
+    const allTx = await getAllTx();
     const addressStakedValueMap = new Map<string, DelegatorMapEntry>([])
 
     allTx.forEach(tx => {
@@ -42,16 +49,22 @@ const getStakersOverTime = (allTx: ValidatorTx[]) => {
         }
     })
 
-    console.log(`Full map size: `, addressStakedValueMap.size)
-    const nonEmptyAddresses = filterAMap(addressStakedValueMap, entry => { return entry.value > 0 } )
-    console.log(`Non-empty entries size: `, nonEmptyAddresses.size)
+    const nonEmptyAddressesMap = filterAMap(addressStakedValueMap, entry => { return entry.value > 0 } )
+    const shapeshiftAddressesMap = filterAMap(addressStakedValueMap, entry => { return entry.type == DelegatorType.Shapeshift } )
+    const nonEmptyShapeshiftAddressesMap = filterAMap(shapeshiftAddressesMap, entry => { return entry.value > 0 } )
 
-    const shapeshiftAddresses = filterAMap(addressStakedValueMap, entry => { return entry.type == DelegatorType.Shapeshift } )
-    const nonEmptyShapeshiftAddresses = filterAMap(shapeshiftAddresses, entry => { return entry.value > 0 } )
+    const adressList = Array.from(nonEmptyShapeshiftAddressesMap).map(([key, entry]) => key)
+    const shapeshiftTx = _.uniq(allTx.filter(tx => adressList.includes(tx.address)))
 
-    console.log(`Shapeshift size: `, shapeshiftAddresses.size)
-    console.log(`Non-empty shapeshift size: `, nonEmptyShapeshiftAddresses.size)
-    
+    const delegationsOverTime = getDelegationsOverTime(shapeshiftTx)
+    const stakersOverTime = getStakersOverTime(shapeshiftTx)
+
+    return {
+        totalStakers: nonEmptyAddressesMap.size,
+        shapeshiftStakers: nonEmptyShapeshiftAddressesMap.size,
+        stakersOverTime,
+        delegationsOverTime
+    }
  }
 
 
@@ -84,22 +97,74 @@ const handleUnstakeTx = (addressStakedValueMap: Map<string, DelegatorMapEntry>, 
         current.value -= tx.amount
         current.tx.push(tx)
         addressStakedValueMap.set(tx.address, current)
-        console.log(current)
     }else{
         console.warn(`Found an unstake operation for address ${tx.address} but no stake operations found`)
     }
  }
 
 
- const filterAMap = (addressStakedValueMap : Map<string, DelegatorMapEntry>, condition : (entry: DelegatorMapEntry) => Boolean) => {
-    return new Map(
-        Array.from(addressStakedValueMap).filter(([key, entry]) => {
-          if (condition(entry)) {
-            return true;
-          }
-      
-          return false;
-        }),
-      );
- }
+ const getDelegationsOverTime = (shapeshiftTx: ValidatorTx[]) => {
 
+    var totalValue = 0;
+  
+    return shapeshiftTx.map(x => {
+      const tmp = x.amount
+      if(x.type == ValidatorTxType.Stake){
+        totalValue = totalValue + tmp;
+      }else{
+        totalValue = totalValue - tmp;
+      }
+      return {
+        amount: uAtomToAtom(totalValue),
+        timestamp: x.timestamp * 1000, // convert to millis
+      } as HistoryData
+    })
+  };
+  
+  // This is almost identical to the previous loop, however in order to not overcomplicate the logic we split this into two loops. 
+  // Otherwise on each handle of stake/unstake we need to see if this operation is happening a shapeshift address or not and include all of this logic in the handling
+  // Feel free to merge the two loops into one as it makes perfect sense to do so
+  
+  const getStakersOverTime = (shapeshiftTx: ValidatorTx[]) => {
+
+    const shapeshiftAddressesMap = new Map<string, number>([])
+    let stakersOverTime = [];
+    let total = 0
+
+    shapeshiftTx.forEach(tx => {
+        switch(tx.type) {
+            case ValidatorTxType.Stake:
+                if(shapeshiftAddressesMap.has(tx.address)){
+                    let current = shapeshiftAddressesMap.get(tx.address)
+                    current += tx.amount
+                    shapeshiftAddressesMap.set(tx.address, current)
+                }else{
+                    shapeshiftAddressesMap.set(tx.address, tx.amount)
+                    total+=1;
+                    stakersOverTime.push({
+                        amount: total,
+                        timestamp: tx.timestamp * 1000
+                    })
+                }
+                break;
+            case ValidatorTxType.Unstake:
+                if(shapeshiftAddressesMap.has(tx.address)){
+                    let current = shapeshiftAddressesMap.get(tx.address)
+                    current -= tx.amount
+                    shapeshiftAddressesMap.set(tx.address, current)
+                    if(current <=0){
+                        total -= 1
+                        stakersOverTime.push({
+                            amount: total,
+                            timestamp: tx.timestamp * 1000
+                        })
+                    }
+                }else{
+                    console.warn(`Found an unstake operation for address ${tx.address} but no stake operations found`)
+                }
+                break;
+        }
+    })
+
+    return stakersOverTime
+  }

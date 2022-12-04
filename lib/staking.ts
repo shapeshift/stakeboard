@@ -1,17 +1,12 @@
-export interface CoinStakingData {
-  historyData: HistoryData[],
+import { StakerData } from "./tx/service";
+
+export interface DashboardData {
   coinStats: CoinStats,
+  stakerData: StakerData,
   validatorDetails: ValidatorDetails
 }
 
-export interface HistoryData {
-  timestamp: number;
-  amount: number;
-}
-
 export interface CoinStats {
-    totalStaked: number;
-    totalUnstaked: number;
     coin: string;
     coinUsdPrice: number;
 }
@@ -23,4 +18,9 @@ export interface ValidatorDetails {
   rank: number;
   commission: number;
   votingPower: number;
+}
+
+export interface HistoryData {
+  timestamp: number;
+  amount: number;
 }

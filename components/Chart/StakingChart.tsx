@@ -2,6 +2,7 @@ import { getStakerData, getStakingData, StakerData, StakingData } from "componen
 import PieChart from "./PieChart";
 import { scaleOrdinal } from "@visx/scale";
 import { colors } from "src/theme/colors";
+import { IStakersStats } from "../Layout/DashboardStats";
 
 export const StakingChart = () => {
   const data = getStakingData();
@@ -29,8 +30,7 @@ export const StakingChart = () => {
 };
 
 
-export const StakerChart = () => {
-    const data = getStakerData();
+export const StakerChart = ({stakerData}: IStakersStats) => {
   
     // accessor functions
     const valueAccessor = (d: StakerData) => d.usage;
@@ -41,6 +41,18 @@ export const StakerChart = () => {
       domain: ["Shapeshift", "Others"],
       range: [colors.blue[400], colors.blue[300]],
     });
+
+    const data = 
+      [
+        {
+          label: "Shapeshift",
+          usage: stakerData.shapeshiftStakers/stakerData.totalStakers
+        },
+        {
+          label: "Others",
+          usage: 1-(stakerData.shapeshiftStakers/stakerData.totalStakers)
+        }
+      ]
   
     return (
       <PieChart<StakerData>
@@ -54,3 +66,17 @@ export const StakerChart = () => {
     );
   };
   
+
+  
+// export const getStakingData = (): StakingData[] => {
+//   return [
+//     {
+//       label: "Shapeshift",
+//       usage: 0.3,
+//     },
+//     {
+//       label: "Others",
+//       usage: 0.7,
+//     },
+//   ];
+// };
