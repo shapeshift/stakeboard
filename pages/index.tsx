@@ -4,13 +4,13 @@ import { Container } from "@chakra-ui/react";
 import Header from "@/components/Layout/Header";
 import DashboardStats from "@/components/Layout/DashboardStats";
 import TimeCharts from "@/components/Layout/TimeCharts";
-import { getCoinStakingData } from "@/lib/data";
+import { getDashboardData } from "@/lib/data";
 import { CoinStakingData } from "@/lib/staking";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
-      coinStakingData: await getCoinStakingData()
+      coinStakingData: await getDashboardData()
     },
   };
 };
