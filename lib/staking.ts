@@ -11,7 +11,9 @@ export interface HistoryData {
 
 export interface CoinStats {
     totalStaked: number;
+    totalUnstaked: number;
     coin: string;
+    coinUsdPrice: number;
 }
 
 export interface ValidatorDetails {

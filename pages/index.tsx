@@ -5,7 +5,6 @@ import Header from "@/components/Layout/Header";
 import DashboardStats from "@/components/Layout/DashboardStats";
 import TimeCharts from "@/components/Layout/TimeCharts";
 import { getCoinStakingData } from "@/lib/data";
-import { getValidatorWithRank } from "@/lib/validator";
 import { CoinStakingData } from "@/lib/staking";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {

@@ -1,4 +1,4 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { VALIDATOR_ADDR } from "./const";
 import { CosmosTxResponse, ValidatorResponse } from "./types";
 

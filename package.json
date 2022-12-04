@@ -31,6 +31,7 @@
     "dayjs": "^1.11.5",
     "framer-motion": "^7.4.0",
     "ioredis": "^5.2.4",
+    "log-timestamp": "^0.3.0",
     "next": "latest",
     "node-polyglot": "^2.4.2",
     "numeral": "^2.0.6",

@@ -3,6 +3,7 @@ import { Fee, Tx } from "@/lib/types";
 import Redis from "ioredis";
 import _ from "lodash";
 import { NextApiRequest, NextApiResponse } from "next";
+import { getTokenPrice } from "./coingecko";
 import { HistoryData } from "./staking";
 import { getValidatorDetails } from "./validator";
 
@@ -83,12 +84,14 @@ export const getCoinStakingData = async () => {
 
   const historyData = getHistoryData(validatorTx);
   const validatorDetails = await getValidatorDetails()
+  const coinPrice = (await getTokenPrice("cosmos"))["cosmos"].usd;
 
   return {
     coinStats: {
       totalStaked: uAtomToAtom(totalStaked),
       totalUnstaked: uAtomToAtom(totalUnstaked),
       coin: "ATOM",
+      coinUsdPrice: coinPrice
     },
     historyData: historyData,
     validatorDetails: validatorDetails

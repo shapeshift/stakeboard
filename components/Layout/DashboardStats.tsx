@@ -18,13 +18,14 @@ import { StakerChart, StakingChart } from "components/Chart/StakingChart";
 
 
 interface IValidatorStats {
-  validatorDetails: ValidatorDetails
+  validatorDetails: ValidatorDetails,
+  coinStats: CoinStats
 }
 
 const displayPercent = (percent) => `${(percent * 100).toFixed(2)}%`;
 
 
-const ValidatorStats = ({validatorDetails}: IValidatorStats) => {
+const ValidatorStats = ({validatorDetails, coinStats}: IValidatorStats) => {
   return (
     <Box p={10}>
       <SimpleGrid columns={{ base: 4 }} spacing={10}>
@@ -33,8 +34,8 @@ const ValidatorStats = ({validatorDetails}: IValidatorStats) => {
           <StatNumber>{validatorDetails.rank}</StatNumber>
         </Stat>
         <Stat>
-          <StatLabel>ATOM Price</StatLabel>
-          <StatNumber>$14.07</StatNumber>
+          <StatLabel>{coinStats.coin} Price</StatLabel>
+          <StatNumber>${coinStats.coinUsdPrice}</StatNumber>
         </Stat>
         <Stat>
           <StatLabel>Staking APR</StatLabel>
@@ -138,7 +139,7 @@ const DashboardStats = ({stakingData}: IDashboardStats) => (
       // py={{ base: 20, md: 28 }}
       direction={{ base: "column", xl: "row" }}
     >
-      <ValidatorStats validatorDetails={stakingData.validatorDetails} />
+      <ValidatorStats coinStats={stakingData.coinStats} validatorDetails={stakingData.validatorDetails} />
       <DelegatedStats coinStats={stakingData.coinStats} />
       <StakersStats  />
     </Stack>
