@@ -98,7 +98,7 @@ const handleUnstakeTx = (addressStakedValueMap: Map<string, DelegatorMapEntry>, 
         current.tx.push(tx)
         addressStakedValueMap.set(tx.address, current)
     }else{
-        console.warn(`Found an unstake operation for address ${tx.address} but no stake operations found`)
+        // console.warn(`Found an unstake operation for address ${tx.address} but no stake operations found`)
     }
  }
 
@@ -160,7 +160,7 @@ const handleUnstakeTx = (addressStakedValueMap: Map<string, DelegatorMapEntry>, 
                         })
                     }
                 }else{
-                    console.warn(`Found an unstake operation for address ${tx.address} but no stake operations found`)
+                    // console.warn(`Found an unstake operation for address ${tx.address} but no stake operations found`)
                 }
                 break;
         }

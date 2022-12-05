@@ -1,15 +1,29 @@
-import { getStakerData, getStakingData, StakerData, StakingData } from "components/Data/mock";
 import PieChart from "./PieChart";
 import { scaleOrdinal } from "@visx/scale";
 import { colors } from "src/theme/colors";
 import { IStakersStats } from "../Layout/DashboardStats";
 
-export const StakingChart = () => {
-  const data = getStakingData();
+export interface PieChartData {
+  label: string;
+  usage: number;
+}
+
+export const StakingChart = ({stakerData}: IStakersStats) => {
+  const data = 
+  [
+    {
+      label: "Shapeshift",
+      usage: stakerData.shapeshiftStakers/stakerData.totalStakers
+    },
+    {
+      label: "Others",
+      usage: 1-(stakerData.shapeshiftStakers/stakerData.totalStakers)
+    }
+  ]
 
   // accessor functions
-  const valueAccessor = (d: StakingData) => d.usage;
-  const labelAccessor = (d: StakingData) => d.label;
+  const valueAccessor = (d: PieChartData) => d.usage;
+  const labelAccessor = (d: PieChartData) => d.label;
 
   // color scales
   const colorMapping = scaleOrdinal({
@@ -18,7 +32,7 @@ export const StakingChart = () => {
   });
 
   return (
-    <PieChart<StakingData>
+    <PieChart<PieChartData>
       width={200}
       height={200}
       data={data}
@@ -33,8 +47,8 @@ export const StakingChart = () => {
 export const StakerChart = ({stakerData}: IStakersStats) => {
   
     // accessor functions
-    const valueAccessor = (d: StakerData) => d.usage;
-    const labelAccessor = (d: StakerData) => d.label;
+    const valueAccessor = (d: PieChartData) => d.usage;
+    const labelAccessor = (d: PieChartData) => d.label;
   
     // color scales
     const colorMapping = scaleOrdinal({
@@ -55,7 +69,7 @@ export const StakerChart = ({stakerData}: IStakersStats) => {
       ]
   
     return (
-      <PieChart<StakerData>
+      <PieChart<PieChartData>
         width={200}
         height={200}
         data={data}

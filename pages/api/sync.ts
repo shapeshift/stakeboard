@@ -19,8 +19,11 @@ export default async function handler(
   const lastTxTimestamp = await redis.get(LAST_TX_TIMESTAMP);
   const completed = await isSyncCompleted(redis);
 
+  console.log("Top level check: ", lastTxTimestamp)
+
   // There's two high-level cases to consider: whether we do we have the history backfill completed or not.
   // If not, we start with fetching the validator history (till "start of time") and on subsequent syncs only focus on loading new data
+
   if (!completed) {
     handleIncompleteHistory(redis, lastTxTimestamp, res);
   } else {
@@ -125,8 +128,9 @@ const syncFullHistory = async (redis: Redis) => {
     const txStrings = unchainedTxResponse.txs.map((tx) => JSON.stringify(tx));
     await redis.lpush(TX_COLLECTION, ...txStrings);
     await redis.set(CURSOR, unchainedTxResponse.cursor);
+    const total = await redis.llen(TX_COLLECTION)
     console.log(
-      `Saved ${txStrings.length} txs, moving cursor`
+      `Saved ${txStrings.length} txs, total at ${total}, moving cursor`
     );
     await syncFullHistory(redis);
   } else {
