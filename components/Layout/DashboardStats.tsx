@@ -90,11 +90,9 @@ const DelegatedStats = ({coinStats}: IDelegatedStats) => {
           </Stat>
           <Stat>
             <StatLabel>Shapeshift</StatLabel>
-            <StatNumber>5.23 ATOM</StatNumber>
+            {/* <StatNumber>5.23 ATOM</StatNumber> */}
           </Stat>
         </Stack>
-        <StakingChart />
-        {/* <PieChart width={300} height={300} /> */}
       </Stack>
     </Box>
   );
