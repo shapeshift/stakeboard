@@ -16,10 +16,12 @@ export default async function handler(
 
   const allTx = await redis.lrange(TX_COLLECTION, 0, -1);
   const txData: Tx[] = allTx.map((str) => JSON.parse(str))
+  const lastTimestamp = await redis.get(LAST_TX_TIMESTAMP)
   // const data = await getAllStakedTx()
 
   res.status(200).json({
-    data: txData
+    data: txData,
+    timestamp: lastTimestamp
   })
 }
 
