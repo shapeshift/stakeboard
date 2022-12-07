@@ -1,4 +1,5 @@
 import Redis from "ioredis";
+import _ from "lodash";
 import { NextApiResponse } from "next";
 import { TX_COLLECTION, LAST_TX_TIMESTAMP } from "../const";
 import { CosmosTxResponse } from "../types";
