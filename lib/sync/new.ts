@@ -20,7 +20,7 @@ export const runNewSync = async (
         .status(200)
         .json({ message: "Timestamps differ, getting missing transaction data" });
     } else {
-      console.log("History completed so fetching new transactions");
+      console.log("Data is up to date");
       res.status(200).json({ message: "Data is up to date" });
     }
   };
