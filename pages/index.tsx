@@ -10,24 +10,26 @@ import { DashboardData } from "@/lib/staking";
 export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
-      dashboardData: await getDashboardData()
+      dashboardData: await getDashboardData(),
     },
   };
 };
 
-interface IHomeProps{
-  dashboardData: DashboardData
+interface IHomeProps {
+  dashboardData: DashboardData;
 }
 
 const Home: NextPage<IHomeProps> = (props) => {
   return (
-    <main>                                                                          
-      <Container maxW={"7xl"}>
-        <Header/>
-        <DashboardStats dashboardData={props.dashboardData}/>
-        <TimeCharts stakerData={props.dashboardData.stakerData}  />
-      </Container>
-    </main>
+    <>
+      <main>
+        <Container maxW={"7xl"}>
+          <Header />
+          <DashboardStats dashboardData={props.dashboardData} />
+          <TimeCharts stakerData={props.dashboardData.stakerData} />
+        </Container>
+      </main>
+    </>
   );
 };
 
