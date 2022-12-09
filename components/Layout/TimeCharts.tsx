@@ -52,7 +52,7 @@ const TimeCharts = ({ stakerData }: TimeChartProps) => {
         defaultTime={HistoryTimeframe.MONTH}
       />
       <Heading mt="10" size="md">
-        Total ATOM staked over time
+        Shapeshift ATOM staked over time
       </Heading>
       <Box height={"350px"}>
         <Graph
@@ -63,12 +63,34 @@ const TimeCharts = ({ stakerData }: TimeChartProps) => {
         />
       </Box>
       <Heading mt="10" size="md">
-        Unique stakers over time
+        Total ATOM staked over time
+      </Heading>
+      <Box height={"350px"}>
+        <Graph
+          color={"red.500"}
+          data={filterData(stakerData.allDelegationsOverTime, timeframe, customTimeFrame)}
+          loading={false}
+          isLoaded={true}
+        />
+      </Box>
+      <Heading mt="10" size="md">
+        Shapeshift stakers over time
       </Heading>
       <Box height={"350px"}>
         <Graph
           color={"red.500"}
           data={filterData(stakersOverTime, timeframe, customTimeFrame)}
+          loading={false}
+          isLoaded={true}
+        />
+      </Box>
+      <Heading mt="10" size="md">
+        Total stakers over time
+      </Heading>
+      <Box height={"350px"}>
+        <Graph
+          color={"red.500"}
+          data={filterData(stakerData.allStakersOverTime, timeframe, customTimeFrame)}
           loading={false}
           isLoaded={true}
         />
