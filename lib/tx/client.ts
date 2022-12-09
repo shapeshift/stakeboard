@@ -33,6 +33,7 @@ export const getAllTx = async (): Promise<ValidatorTx[]> => {
 
 const convertToValidatorTx = (allTx: Tx[]): ValidatorTx[] => {
     const stakeOps = allTx.filter(tx => tx.messages[0] !== undefined && tx.messages[0].type === "delegate").map(tx => {
+      // TODO split address into "from" and "to" since currently we are not summing up the data for validators /facepalm
       return {
         address: tx.messages[0].from,
         amount: getUAtomAmount(tx.messages[0].value),

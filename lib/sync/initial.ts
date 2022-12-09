@@ -27,7 +27,7 @@ const startHistorySync = async (redis: Redis) => {
     console.log("Last timestamp not found, syncing full history");
   
     const unchainedTxResponse = await getTx();
-    await redis.lpush(TX_COLLECTION, serializeTx(unchainedTxResponse));
+    await redis.lpush(TX_COLLECTION, ...serializeTx(unchainedTxResponse));
     await redis.set(CURSOR, unchainedTxResponse.cursor);
   
     const maxTimestamp = _.last(unchainedTxResponse.txs)?.timestamp as number;

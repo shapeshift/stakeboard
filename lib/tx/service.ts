@@ -1,4 +1,5 @@
 import { pathHorizontalLine } from "@visx/shape";
+import Redis from "ioredis";
 import _ from "lodash";
 import { HistoryData } from "../staking";
 import { getAllTx, ValidatorTx, ValidatorTxType } from "./client";
@@ -31,6 +32,16 @@ export interface StakerData {
     shapeshiftStakers: number
     stakersOverTime: HistoryData[]
     delegationsOverTime: HistoryData[]
+    allStakersOverTime: HistoryData[]
+    allDelegationsOverTime: HistoryData[]
+}
+
+const saveAddressMapForDebugging = async (addressMap) => {
+    const redis = new Redis({
+        host: process.env.REDIS_HOST || "localhost",
+      });
+    console.log("Saving addressMap for debugging")
+    await redis.set("addressMap", JSON.stringify(Object.fromEntries(addressMap)))
 }
 
 export const getStakerData = async (): Promise<StakerData> => {
@@ -49,6 +60,8 @@ export const getStakerData = async (): Promise<StakerData> => {
         }
     })
 
+    await saveAddressMapForDebugging(addressStakedValueMap)
+
     const nonEmptyAddressesMap = filterAMap(addressStakedValueMap, entry => { return entry.value > 0 } )
     const shapeshiftAddressesMap = filterAMap(addressStakedValueMap, entry => { return entry.type == DelegatorType.Shapeshift } )
     const nonEmptyShapeshiftAddressesMap = filterAMap(shapeshiftAddressesMap, entry => { return entry.value > 0 } )
@@ -59,11 +72,17 @@ export const getStakerData = async (): Promise<StakerData> => {
     const delegationsOverTime = getDelegationsOverTime(shapeshiftTx)
     const stakersOverTime = getStakersOverTime(shapeshiftTx)
 
+    const allDelegationsOverTime = getDelegationsOverTime(allTx)
+    const allStakersOverTime  = getStakersOverTime(allTx)
+
+
     return {
         totalStakers: nonEmptyAddressesMap.size,
         shapeshiftStakers: nonEmptyShapeshiftAddressesMap.size,
         stakersOverTime,
-        delegationsOverTime
+        delegationsOverTime,
+        allStakersOverTime,
+        allDelegationsOverTime
     }
  }
 
@@ -128,7 +147,7 @@ const handleUnstakeTx = (addressStakedValueMap: Map<string, DelegatorMapEntry>, 
   const getStakersOverTime = (shapeshiftTx: ValidatorTx[]) => {
 
     const shapeshiftAddressesMap = new Map<string, number>([])
-    let stakersOverTime = [];
+    let stakersOverTime: HistoryData[] = [];
     let total = 0
 
     shapeshiftTx.forEach(tx => {
