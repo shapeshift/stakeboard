@@ -4,6 +4,6 @@ import { CosmosTxResponse } from "../types";
 
 export const isInitialSyncCompleted = async (redis: Redis) => (await redis.get(SYNC_COMPLETE)) === "true";
 
-export const serializeTx = (unchainedTxResponse) => {
+export const serializeTx = (unchainedTxResponse: CosmosTxResponse): string[] => {
     return unchainedTxResponse.txs.map((tx) => JSON.stringify(tx))
 }

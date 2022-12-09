@@ -64,12 +64,12 @@ export const runNewSync = async (
       console.log("Found lastTxTimestamp on current page");
       const index = unchainedTxResponse.txs.indexOf(matchingTx);
       const data: string[] = unchainedTxResponse.txs.slice(0, index).map((tx) => JSON.stringify(tx))
-      await redis.lpush(TX_COLLECTION, data);
+      await redis.lpush(TX_COLLECTION, ...data);
       console.log("Data has been updated, all Tx up to date");
     } else {
       // save entire page, set cursor for next request
       console.log("Saved a new page, moving cursor");
-      await redis.lpush(TX_COLLECTION, serializeTx(unchainedTxResponse));
+      await redis.lpush(TX_COLLECTION, ...serializeTx(unchainedTxResponse));
       await redis.set(CURSOR, unchainedTxResponse.cursor);
     }
   }
