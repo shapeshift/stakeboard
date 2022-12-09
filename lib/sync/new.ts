@@ -25,7 +25,7 @@ export const runNewSync = async (
       res.status(200).json({ message: msg });
     }else{
       await saveCurrentResponse(redis, unchainedTxResponse, lastTxTimestamp)
-      const msg = `Data not up to date, starting sync: ${lastTxTimestamp} < ${latestTxFromResp(unchainedTxResponse)}`
+      const msg = `Data not up to date, starting sync: ${lastTxTimestamp} != ${latestTxFromResp(unchainedTxResponse)}`
       console.log(msg);
       syncHistoryLoop(redis, lastTxTimestamp);
       res.status(200).json({ message: msg });
@@ -35,6 +35,7 @@ export const runNewSync = async (
   const syncHistoryLoop = async (redis: Redis, lastTxTimestamp: number) => {
     const cursor: string = (await redis.get(CURSOR)) || "";
     const unchainedTxResponse = await getTx(cursor);
+    console.log("Getting next data page");
     await saveCurrentResponse(redis, unchainedTxResponse, lastTxTimestamp)
 
     if(responseContainsLatestTx(unchainedTxResponse, lastTxTimestamp)){
@@ -43,7 +44,6 @@ export const runNewSync = async (
       await syncHistoryLoop(redis, lastTxTimestamp)
     }
   };
-
 
   const responseContainsLatestTx = (unchainedTxResponse: CosmosTxResponse, lastTxTimestamp: number): boolean => {
     return unchainedTxResponse.txs.find(
@@ -63,11 +63,12 @@ export const runNewSync = async (
     if (matchingTx !== undefined) {
       console.log("Found lastTxTimestamp on current page");
       const index = unchainedTxResponse.txs.indexOf(matchingTx);
-      await redis.lpush(TX_COLLECTION, serializeTx(unchainedTxResponse.txs.slice(0, index)));
+      const data: string[] = unchainedTxResponse.txs.slice(0, index).map((tx) => JSON.stringify(tx))
+      await redis.lpush(TX_COLLECTION, data);
       console.log("Data has been updated, all Tx up to date");
     } else {
       // save entire page, set cursor for next request
-      console.log("last timestamp not found, moving on to the next page");
+      console.log("Saved a new page, moving cursor");
       await redis.lpush(TX_COLLECTION, serializeTx(unchainedTxResponse));
       await redis.set(CURSOR, unchainedTxResponse.cursor);
     }
