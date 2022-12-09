@@ -77,6 +77,7 @@ export const runNewSync = async (
 const finishSync = async (redis: Redis) => {
   const allTx: Tx[] = (await redis.lrange(TX_COLLECTION, 0, -1)).map((x) => JSON.parse(x))
   const newLatestTx = _.max(allTx.map(x => x.timestamp))
+  console.log(`Sync completed, setting lastestTx to ${newLatestTx}`)
   await redis.set(LAST_TX_TIMESTAMP, newLatestTx);
   await redis.set(CURSOR, "");
 }

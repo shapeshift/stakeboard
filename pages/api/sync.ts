@@ -19,8 +19,6 @@ export default async function handler(
   const lastTxTimestamp = await redis.get(LAST_TX_TIMESTAMP);
   const completed = await isInitialSyncCompleted(redis);
 
-  console.log("Top level check: ", lastTxTimestamp)
-
   // The sync runs in one of two modes: 
   // Initial - when the DB is empty, we need to fetch all historical transactions starting from now till the first one (isInitialSyncCompleted)
   // New - Once we know that our data is valid until some recent point in time, we fetch only the new missing data until that moment (lastTxTimestamp)
