@@ -11,9 +11,15 @@ export const runNewSync = async (
     res: NextApiResponse
   ) => {
     const unchainedTxResponse = await getTx();
-    const maxTimestamp = _.max(unchainedTxResponse.txs.map(tx => tx.timestamp)) as number;
+    const allTx = unchainedTxResponse.txs.map(tx => tx.timestamp)
+    const latestTx = _.max(allTx);
+    
+    console.log("Resp tx: ")
+    allTx.forEach(x => console.log(x))
+
+    console.log("Last tx: ", latestTx)
   
-    if (maxTimestamp != Number(lastTxTimestamp)) {
+    if (latestTx != Number(lastTxTimestamp)) {
       console.log("Timestamps differ, getting missing transaction data");
       loadNewTx(redis, unchainedTxResponse, lastTxTimestamp);
       res
@@ -34,11 +40,12 @@ export const runNewSync = async (
     unchainedTxResponse: CosmosTxResponse,
     lastTxTimestamp: number
   ) => {
-    
     const matchingTx = unchainedTxResponse.txs.find(
       (tx) => tx.timestamp === lastTxTimestamp
     );
-    if (matchingTx != undefined) {
+    console.log(matchingTx)
+
+    if (matchingTx !== undefined) {
       console.log("Found lastTxTimestamp on current page");
       const index = unchainedTxResponse.txs.indexOf(matchingTx);
       const missingData = unchainedTxResponse.txs.slice(0, index);
