@@ -3,7 +3,7 @@ import _ from "lodash";
 import { NextApiResponse } from "next";
 import { CURSOR, LAST_TX_TIMESTAMP, pageSize, SYNC_COMPLETE, TX_COLLECTION } from "../const";
 import { getTx } from "../unchained";
-import { isInitialSyncCompleted } from "./shared";
+import { isInitialSyncCompleted, serializeTx } from "./shared";
 
 
 export const runInitialSync = async (
@@ -13,7 +13,7 @@ export const runInitialSync = async (
   ) => {
     if (lastTxTimestamp != null) {
       console.log("History sync started but not completed, resuming");
-      syncFullHistory(redis);
+      syncHistoryLoop(redis);
       res.status(200).json({ message: "Resuming initial history sync" });
     } else {
       await startHistorySync(redis);
@@ -27,9 +27,7 @@ const startHistorySync = async (redis: Redis) => {
     console.log("Last timestamp not found, syncing full history");
   
     const unchainedTxResponse = await getTx();
-    const txStrings = unchainedTxResponse.txs.map((tx) => JSON.stringify(tx));
-    await redis.lpush(TX_COLLECTION, ...txStrings);
-  
+    await redis.lpush(TX_COLLECTION, serializeTx(unchainedTxResponse));
     await redis.set(CURSOR, unchainedTxResponse.cursor);
   
     const maxTimestamp = _.last(unchainedTxResponse.txs)?.timestamp as number;
@@ -37,10 +35,10 @@ const startHistorySync = async (redis: Redis) => {
     console.log(`Setting ${LAST_TX_TIMESTAMP} to ${maxTimestamp}`);
     await redis.set(LAST_TX_TIMESTAMP, maxTimestamp);
     // lack of await is on purpose here
-    syncFullHistory(redis);
+    syncHistoryLoop(redis);
   };
   
-  const syncFullHistory = async (redis: Redis) => {
+  const syncHistoryLoop = async (redis: Redis) => {
     const cursor: string = (await redis.get(CURSOR)) || "";
   
     if (!(await isInitialSyncCompleted(redis))) {
@@ -60,7 +58,7 @@ const startHistorySync = async (redis: Redis) => {
         console.log(
           `Saved ${txStrings.length} txs, total at ${total}, moving cursor`
         );
-        await syncFullHistory(redis);
+        await syncHistoryLoop(redis);
       }
     } else {
       console.log("Completed full history sync");

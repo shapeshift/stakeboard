@@ -2,37 +2,54 @@ import Redis from "ioredis";
 import _ from "lodash";
 import { NextApiResponse } from "next";
 import { TX_COLLECTION, LAST_TX_TIMESTAMP, CURSOR } from "../const";
-import { CosmosTxResponse } from "../types";
+import { CosmosTxResponse, Tx } from "../types";
 import { getTx } from "../unchained";
+import { serializeTx } from "./shared";
+
+const latestTxFromResp = (unchainedTxResponse): Number => { return _.max(unchainedTxResponse.txs.map(tx => tx.timestamp)) as number }
+
+const isAllDataUpToDate = (unchainedTxResponse, lastTxTimestamp) => {
+  return latestTxFromResp(unchainedTxResponse) == Number(lastTxTimestamp)
+}
 
 export const runNewSync = async (
     redis: Redis,
     lastTxTimestamp: number,
     res: NextApiResponse
   ) => {
-    const unchainedTxResponse = await getTx();
-    const allTx = unchainedTxResponse.txs.map(tx => tx.timestamp)
-    const latestTx = _.max(allTx);
+    const unchainedTxResponse: CosmosTxResponse = await getTx();
     
-    console.log("Resp tx: ")
-    allTx.forEach(x => console.log(x))
-
-    console.log("Last tx: ", latestTx)
-  
-    if (latestTx != Number(lastTxTimestamp)) {
-      console.log("Timestamps differ, getting missing transaction data");
+    if(isAllDataUpToDate(unchainedTxResponse, lastTxTimestamp)){
+      const msg = "Data is up to date"
+      console.log(msg);
+      res.status(200).json({ message: msg });
+    }else{
       await saveCurrentResponse(redis, unchainedTxResponse, lastTxTimestamp)
-      loadNewTx(redis, unchainedTxResponse, lastTxTimestamp);
-      res
-        .status(200)
-        .json({ message: "Timestamps differ, getting missing transaction data" });
-    } else {
-      console.log("Data is up to date");
-      res.status(200).json({ message: "Data is up to date" });
+      const msg = `Data not up to date, starting sync: ${lastTxTimestamp} < ${latestTxFromResp(unchainedTxResponse)}`
+      console.log(msg);
+      syncHistoryLoop(redis, lastTxTimestamp);
+      res.status(200).json({ message: msg });
+    }
+  };
+
+  const syncHistoryLoop = async (redis: Redis, lastTxTimestamp: number) => {
+    const cursor: string = (await redis.get(CURSOR)) || "";
+    const unchainedTxResponse = await getTx(cursor);
+    await saveCurrentResponse(redis, unchainedTxResponse, lastTxTimestamp)
+
+    if(responseContainsLatestTx(unchainedTxResponse, lastTxTimestamp)){
+      await finishSync(redis)
+    }else{
+      await syncHistoryLoop(redis, lastTxTimestamp)
     }
   };
 
 
+  const responseContainsLatestTx = (unchainedTxResponse: CosmosTxResponse, lastTxTimestamp: number): boolean => {
+    return unchainedTxResponse.txs.find(
+      (tx) => tx.timestamp === lastTxTimestamp
+    ) !== undefined;
+  }
 
   const saveCurrentResponse = async (
     redis: Redis,
@@ -42,45 +59,24 @@ export const runNewSync = async (
     const matchingTx = unchainedTxResponse.txs.find(
       (tx) => tx.timestamp === lastTxTimestamp
     );
-    console.log(matchingTx)
 
     if (matchingTx !== undefined) {
       console.log("Found lastTxTimestamp on current page");
       const index = unchainedTxResponse.txs.indexOf(matchingTx);
-      const missingData = unchainedTxResponse.txs.slice(0, index);
-      const txStrings = missingData.map((tx) => JSON.stringify(tx));
-      await redis.lpush(TX_COLLECTION, ...txStrings);
-      const maxTimestamp = _.max(unchainedTxResponse.txs.map(tx => tx.timestamp)) as number;
-      await redis.set(LAST_TX_TIMESTAMP, maxTimestamp);
+      await redis.lpush(TX_COLLECTION, serializeTx(unchainedTxResponse.txs.slice(0, index)));
       console.log("Data has been updated, all Tx up to date");
     } else {
-      console.log("last timestamp not found, moving on to the next page");
       // save entire page, set cursor for next request
-      const txStrings = unchainedTxResponse.txs.map((tx) => JSON.stringify(tx));
-      await redis.lpush(TX_COLLECTION, ...txStrings);
+      console.log("last timestamp not found, moving on to the next page");
+      await redis.lpush(TX_COLLECTION, serializeTx(unchainedTxResponse));
       await redis.set(CURSOR, unchainedTxResponse.cursor);
     }
   }
 
-
-
-
-
-  
-  // Get the latest page
-  // search the page for the lastTimestamp that we have saved
-  // if found, load only the the new data into the db
-  // if not found, load the entire page and move on to the next one
-  const loadNewTx = async (
-    redis: Redis,
-    unchainedTxResponse: CosmosTxResponse,
-    lastTxTimestamp: number
-  ) => {
-    
-  };
-
-
-  const loadPagesUntilMatch = () => {
-
-
-  }
+// data can be unordered, so we need to sort it
+const finishSync = async (redis: Redis) => {
+  const allTx: Tx[] = (await redis.lrange(TX_COLLECTION, 0, -1)).map((x) => JSON.parse(x))
+  const newLatestTx = _.max(allTx.map(x => x.timestamp))
+  await redis.set(LAST_TX_TIMESTAMP, newLatestTx);
+  await redis.set(CURSOR, "");
+}
