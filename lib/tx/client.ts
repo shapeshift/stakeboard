@@ -5,7 +5,8 @@ import _ from "lodash";
 
 
 export type ValidatorTx = {
-    address: string
+    validatorAddr: string
+    stakerAddr: string
     amount: number
     type: ValidatorTxType
     timestamp: number
@@ -35,7 +36,8 @@ const convertToValidatorTx = (allTx: Tx[]): ValidatorTx[] => {
     const stakeOps = allTx.filter(tx => tx.messages[0] !== undefined && tx.messages[0].type === "delegate").map(tx => {
       // TODO split address into "from" and "to" since currently we are not summing up the data for validators /facepalm
       return {
-        address: tx.messages[0].from,
+        stakerAddr: tx.messages[0].from,
+        validatorAddr: tx.messages[0].to,
         amount: getUAtomAmount(tx.messages[0].value),
         type: ValidatorTxType.Stake,
         timestamp: tx.timestamp,
@@ -44,7 +46,8 @@ const convertToValidatorTx = (allTx: Tx[]): ValidatorTx[] => {
     })
     const unstakeOps = allTx.filter(tx => tx.messages[0] !== undefined && tx.messages[0].type === "begin_unbonding").map(tx => {
       return {
-        address: tx.messages[0].to,
+        validatorAddr: tx.messages[0].from,
+        stakerAddr: tx.messages[0].to,
         amount: getUAtomAmount(tx.messages[0].value),
         type: ValidatorTxType.Unstake,
         timestamp: tx.timestamp,

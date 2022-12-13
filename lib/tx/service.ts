@@ -1,4 +1,3 @@
-import { pathHorizontalLine } from "@visx/shape";
 import Redis from "ioredis";
 import _ from "lodash";
 import { HistoryData } from "../staking";
@@ -67,7 +66,7 @@ export const getStakerData = async (): Promise<StakerData> => {
     const nonEmptyShapeshiftAddressesMap = filterAMap(shapeshiftAddressesMap, entry => { return entry.value > 0 } )
 
     const adressList = Array.from(nonEmptyShapeshiftAddressesMap).map(([key, entry]) => key)
-    const shapeshiftTx = _.uniq(allTx.filter(tx => adressList.includes(tx.address)))
+    const shapeshiftTx = _.uniq(allTx.filter(tx => adressList.includes(tx.stakerAddr)))
 
     const delegationsOverTime = getDelegationsOverTime(shapeshiftTx)
     const stakersOverTime = getStakersOverTime(shapeshiftTx)
@@ -88,13 +87,18 @@ export const getStakerData = async (): Promise<StakerData> => {
 
 
 const handleStakeTx = (addressStakedValueMap: Map<string, DelegatorMapEntry>, tx: ValidatorTx) => {
-    if(addressStakedValueMap.has(tx.address)){
-        const current = addressStakedValueMap.get(tx.address)
+    if(addressStakedValueMap.has(tx.stakerAddr)){
+        const current = addressStakedValueMap.get(tx.stakerAddr)
         current.value += tx.amount
         current.tx.push(tx)
-        addressStakedValueMap.set(tx.address, current)
+        // In a case that the initial stake operation was not done via shapeshift
+        // We want to update the delegator type based on any future TX which was done via SS
+        if(current.type != DelegatorType.Shapeshift){
+            current.type = getDelegatorType(tx)
+        }
+        addressStakedValueMap.set(tx.stakerAddr, current)
     }else{
-        addressStakedValueMap.set(tx.address, {
+        addressStakedValueMap.set(tx.stakerAddr, {
             type: getDelegatorType(tx),
             value: tx.amount,
             tx: [tx]
@@ -111,13 +115,17 @@ const getDelegatorType = (tx: ValidatorTx) => {
 }
 
 const handleUnstakeTx = (addressStakedValueMap: Map<string, DelegatorMapEntry>, tx: ValidatorTx) => { 
-    if(addressStakedValueMap.has(tx.address)){
-        const current = addressStakedValueMap.get(tx.address)
+    if(addressStakedValueMap.has(tx.stakerAddr)){
+        const current = addressStakedValueMap.get(tx.stakerAddr)
         current.value -= tx.amount
         current.tx.push(tx)
-        addressStakedValueMap.set(tx.address, current)
+        addressStakedValueMap.set(tx.stakerAddr, current)
     }else{
-        // console.warn(`Found an unstake operation for address ${tx.address} but no stake operations found`)
+        addressStakedValueMap.set(tx.stakerAddr, {
+            type: getDelegatorType(tx),
+            value: -tx.amount,
+            tx: [tx]
+        })
     }
  }
 
@@ -153,12 +161,12 @@ const handleUnstakeTx = (addressStakedValueMap: Map<string, DelegatorMapEntry>, 
     shapeshiftTx.forEach(tx => {
         switch(tx.type) {
             case ValidatorTxType.Stake:
-                if(shapeshiftAddressesMap.has(tx.address)){
-                    let current = shapeshiftAddressesMap.get(tx.address)
+                if(shapeshiftAddressesMap.has(tx.stakerAddr)){
+                    let current = shapeshiftAddressesMap.get(tx.stakerAddr)
                     current += tx.amount
-                    shapeshiftAddressesMap.set(tx.address, current)
+                    shapeshiftAddressesMap.set(tx.stakerAddr, current)
                 }else{
-                    shapeshiftAddressesMap.set(tx.address, tx.amount)
+                    shapeshiftAddressesMap.set(tx.stakerAddr, tx.amount)
                     total+=1;
                     stakersOverTime.push({
                         amount: total,
@@ -167,10 +175,10 @@ const handleUnstakeTx = (addressStakedValueMap: Map<string, DelegatorMapEntry>, 
                 }
                 break;
             case ValidatorTxType.Unstake:
-                if(shapeshiftAddressesMap.has(tx.address)){
-                    let current = shapeshiftAddressesMap.get(tx.address)
+                if(shapeshiftAddressesMap.has(tx.stakerAddr)){
+                    let current = shapeshiftAddressesMap.get(tx.stakerAddr)
                     current -= tx.amount
-                    shapeshiftAddressesMap.set(tx.address, current)
+                    shapeshiftAddressesMap.set(tx.stakerAddr, current)
                     if(current <=0){
                         total -= 1
                         stakersOverTime.push({
