@@ -143,7 +143,7 @@ const DashboardStats = ({dashboardData}: IDashboardStats) => (
       direction={{ base: "column", xl: "row" }}
     >
       <ValidatorStats coinStats={dashboardData.coinStats} validatorDetails={dashboardData.validatorDetails} />
-      <DelegatedStats validatorDetails={dashboardData.validatorDetails} coinStats={dashboardData.coinStats} />
+      <DelegatedStats validatorDetails={dashboardData.validatorDetails} />
       <StakersStats stakerData={dashboardData.stakerData} />
     </Stack>
   </Box>
