@@ -1,12 +1,12 @@
+import Redis from "ioredis";
 import _ from "lodash";
-import { ACCOUNT_ADDR, VALIDATOR_ADDR } from "./const";
+import { ACCOUNT_ADDR, VALIDATORS, VALIDATOR_ADDR } from "./const";
 import { ValidatorDetails } from "./staking";
-import { ValidatorData } from "./types";
-import { getValidators } from "./unchained"
+import { ValidatorData, ValidatorEntry } from "./types";
 
 
-export const getValidatorDetails = async (): Promise<ValidatorDetails> => {
-    const validatorRank = await getValidatorWithRank()
+export const getValidatorDetails = async (redis: Redis): Promise<ValidatorDetails> => {
+    const validatorRank = await getValidatorWithRank(redis)
 
     return {
         apr: validatorRank.apr,
@@ -18,10 +18,10 @@ export const getValidatorDetails = async (): Promise<ValidatorDetails> => {
     }
 }
 
-export const getValidatorWithRank = async () => {
-    const allValidators = await getValidators()
+export const getValidatorWithRank = async (redis: Redis) => {
+    const allValidators = await loadValidators(redis)
 
-    const validators: ValidatorData[] = allValidators.validators.map(x => {
+    const validators: ValidatorData[] = allValidators.map(x => {
         return {
             address: x.address,
             apr: parseFloat(x.apr),
@@ -41,3 +41,8 @@ export const getValidatorWithRank = async () => {
     const shapeshiftValidator = indexedValidators.find(x => x.address === VALIDATOR_ADDR) 
     return shapeshiftValidator;
 }
+
+const loadValidators = async (redis: Redis): Promise<ValidatorEntry[]> => {
+    return (await redis.lrange(VALIDATORS, 0, -1)).map((x) => JSON.parse(x))
+}
+

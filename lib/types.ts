@@ -1,5 +1,6 @@
 export interface ValidatorResponse {
     validators: ValidatorEntry[]
+    cursor: string;
 }
 
 export interface ValidatorEntry {

@@ -2,9 +2,9 @@ import axios from "axios";
 import { VALIDATOR_ADDR } from "./const";
 import { CosmosTxResponse, ValidatorResponse } from "./types";
 
-export const getValidators = async (): Promise<ValidatorResponse> => {
+export const getValidators = async (cursor?: string): Promise<ValidatorResponse> => {
   const { data } = await axios.get(
-    `${process.env.UNCHAINED_HOST}/api/v1/validators`
+    `${process.env.UNCHAINED_HOST}/api/v1/validators`, { params: { cursor: cursor } }
   );
   return data;
 };
