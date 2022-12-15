@@ -18,6 +18,8 @@ export interface ValidatorDetails {
   rank: number;
   commission: number;
   votingPower: number;
+  totalDelegated: number;
+  shapeshiftDelegated: number;
 }
 
 export interface HistoryData {

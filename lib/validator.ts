@@ -2,11 +2,15 @@ import Redis from "ioredis";
 import _ from "lodash";
 import { ACCOUNT_ADDR, VALIDATORS, VALIDATOR_ADDR } from "./const";
 import { ValidatorDetails } from "./staking";
+import { uAtomToAtom } from "./tx/util";
 import { ValidatorData, ValidatorEntry } from "./types";
 
 
 export const getValidatorDetails = async (redis: Redis): Promise<ValidatorDetails> => {
-    const validatorRank = await getValidatorWithRank(redis)
+    const allValidators: ValidatorEntry[] = await loadValidators(redis)
+    const validatorRank = await getValidatorWithRank(allValidators)
+    const totalShares = _.sum(allValidators.map(x => Number(x.shares)))
+    const votingPower = validatorRank.shares/totalShares
 
     return {
         apr: validatorRank.apr,
@@ -14,13 +18,13 @@ export const getValidatorDetails = async (redis: Redis): Promise<ValidatorDetail
         commission: 0.1,
         accountAddress: ACCOUNT_ADDR,
         rank: validatorRank.rank,
-        votingPower: 0
+        votingPower: votingPower,
+        totalDelegated: uAtomToAtom(totalShares),
+        shapeshiftDelegated: uAtomToAtom(validatorRank.shares)
     }
 }
 
-export const getValidatorWithRank = async (redis: Redis) => {
-    const allValidators = await loadValidators(redis)
-
+export const getValidatorWithRank = async (allValidators: ValidatorEntry[]) => {
     const validators: ValidatorData[] = allValidators.map(x => {
         return {
             address: x.address,

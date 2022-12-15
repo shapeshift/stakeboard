@@ -19,9 +19,9 @@ export const runValidatorSync = async (redis: Redis) => {
     }
 
     console.log(`Validators size: ${allValidators.length}`)
-    
+
     // replace validator collection
     await redis.del(VALIDATORS)
-    await redis.lpush(VALIDATORS, JSON.stringify(allValidators))
+    await redis.lpush(VALIDATORS, ...(allValidators.map(x => JSON.stringify(x))))
     console.log(`Validators syncronized`)
 }

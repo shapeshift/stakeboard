@@ -1,3 +1,4 @@
+import Redis from "ioredis";
 import _ from "lodash";
 import { getTokenPrice } from "./coingecko";
 import { getStakerData } from "./tx/service";
@@ -9,8 +10,13 @@ import { getValidatorDetails } from "./validator";
 
 
 export const getDashboardData = async () => {
+
+  const redis = new Redis({
+    host: process.env.REDIS_HOST || "localhost",
+  });
+
   const stakerData = await getStakerData();
-  const validatorDetails = await getValidatorDetails()
+  const validatorDetails = await getValidatorDetails(redis)
   const coinPrice = (await getTokenPrice("cosmos"))["cosmos"].usd;
 
   return {

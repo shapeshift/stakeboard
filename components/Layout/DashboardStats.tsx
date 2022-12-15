@@ -15,7 +15,7 @@ import {
   Heading,
   Flex,
 } from "@chakra-ui/react";
-import { StakerChart, StakingChart } from "components/Chart/StakingChart";
+import { StakerChart, DelegatedChart } from "components/Chart/StakingChart";
 
 
 interface IValidatorStats {
@@ -69,11 +69,11 @@ const ValidatorStats = ({validatorDetails, coinStats}: IValidatorStats) => {
   );
 };
 
-interface IDelegatedStats{
-  coinStats: CoinStats 
+export interface IDelegatedStats{
+  validatorDetails: ValidatorDetails,
 }
 
-const DelegatedStats = ({coinStats}: IDelegatedStats) => {
+const DelegatedStats = ({validatorDetails}: IDelegatedStats) => {
   return (
     <Box>
       <Stack
@@ -86,13 +86,14 @@ const DelegatedStats = ({coinStats}: IDelegatedStats) => {
         <Stack>
           <Stat>
             <StatLabel>Total</StatLabel>
-            {/* <StatNumber>{coinStats.totalStaked.toFixed(2)} {coinStats.coin}</StatNumber> */}
+            <StatNumber>{validatorDetails.totalDelegated.toFixed(2)} </StatNumber>
           </Stat>
           <Stat>
             <StatLabel>Shapeshift</StatLabel>
-            {/* <StatNumber>5.23 ATOM</StatNumber> */}
+            <StatNumber>{validatorDetails.shapeshiftDelegated.toFixed(2)} </StatNumber>
           </Stat>
         </Stack>
+        <DelegatedChart validatorDetails={validatorDetails}/>
       </Stack>
     </Box>
   );
@@ -142,7 +143,7 @@ const DashboardStats = ({dashboardData}: IDashboardStats) => (
       direction={{ base: "column", xl: "row" }}
     >
       <ValidatorStats coinStats={dashboardData.coinStats} validatorDetails={dashboardData.validatorDetails} />
-      <DelegatedStats coinStats={dashboardData.coinStats} />
+      <DelegatedStats validatorDetails={dashboardData.validatorDetails} coinStats={dashboardData.coinStats} />
       <StakersStats stakerData={dashboardData.stakerData} />
     </Stack>
   </Box>

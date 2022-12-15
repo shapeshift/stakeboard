@@ -1,23 +1,23 @@
 import PieChart from "./PieChart";
 import { scaleOrdinal } from "@visx/scale";
 import { colors } from "src/theme/colors";
-import { IStakersStats } from "../Layout/DashboardStats";
+import { IDelegatedStats, IStakersStats } from "../Layout/DashboardStats";
 
 export interface PieChartData {
   label: string;
   usage: number;
 }
 
-export const StakingChart = ({stakerData}: IStakersStats) => {
+export const DelegatedChart = ({validatorDetails}: IDelegatedStats) => {
   const data = 
   [
     {
       label: "Shapeshift",
-      usage: stakerData.shapeshiftStakers/stakerData.totalStakers
+      usage: validatorDetails.shapeshiftDelegated/validatorDetails.totalDelegated
     },
     {
       label: "Others",
-      usage: 1-(stakerData.shapeshiftStakers/stakerData.totalStakers)
+      usage: 1-(validatorDetails.shapeshiftDelegated/validatorDetails.totalDelegated)
     }
   ]
 

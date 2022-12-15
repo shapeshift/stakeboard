@@ -26,11 +26,11 @@ export default async function handler(
   // Initial - when the DB is empty, we need to fetch all historical transactions starting from now till the first one (isInitialSyncCompleted)
   // New - Once we know that our data is valid until some recent point in time, we fetch only the new missing data until that moment (lastTxTimestamp)
 
-  // if (!completed) {
-  //   runInitialSync(redis, lastTxTimestamp, res);
-  // } else {
-  //   runNewSync(redis, Number(lastTxTimestamp), res);
-  // }
+  if (!completed) {
+    runInitialSync(redis, lastTxTimestamp, res);
+  } else {
+    runNewSync(redis, Number(lastTxTimestamp), res);
+  }
 }
 
 
