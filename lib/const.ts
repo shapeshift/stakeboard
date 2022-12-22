@@ -9,3 +9,4 @@ export const VALIDATORS = "validators";
 export const VALIDATOR_ADDR = "cosmosvaloper199mlc7fr6ll5t54w7tts7f4s0cvnqgc59nmuxf";
 export const ACCOUNT_ADDR = "cosmos199mlc7fr6ll5t54w7tts7f4s0cvnqgc5q80f26";
 export const pageSize = 10;
+export const INITIAL_ATOM_POWER = 597.479

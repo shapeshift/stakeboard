@@ -1,8 +1,9 @@
 import Redis from "ioredis";
 import _ from "lodash";
+import { INITIAL_ATOM_POWER } from "../const";
 import { HistoryData } from "../staking";
 import { getAllTx, ValidatorTx, ValidatorTxType } from "./client";
-import { filterAMap, uAtomToAtom } from "./util";
+import { atomToUAtom, filterAMap, uAtomToAtom } from "./util";
 
 const delegateMemos = [
   "Delegated with ShapeShift",
@@ -71,7 +72,7 @@ export const getStakerData = async (): Promise<StakerData> => {
     const delegationsOverTime = getDelegationsOverTime(shapeshiftTx)
     const stakersOverTime = getStakersOverTime(shapeshiftTx)
 
-    const allDelegationsOverTime = getDelegationsOverTime(allTx)
+    const allDelegationsOverTime = getDelegationsOverTime(allTx, atomToUAtom(INITIAL_ATOM_POWER))
     const allStakersOverTime  = getStakersOverTime(allTx)
 
 
@@ -130,11 +131,11 @@ const handleUnstakeTx = (addressStakedValueMap: Map<string, DelegatorMapEntry>, 
  }
 
 
- const getDelegationsOverTime = (shapeshiftTx: ValidatorTx[]) => {
+ const getDelegationsOverTime = (validatorTx: ValidatorTx[], initialValue = 0) => {
 
-    var totalValue = 0;
+    var totalValue = initialValue;
   
-    return shapeshiftTx.map(x => {
+    return validatorTx.map(x => {
       const tmp = x.amount
       if(x.type == ValidatorTxType.Stake){
         totalValue = totalValue + tmp;
