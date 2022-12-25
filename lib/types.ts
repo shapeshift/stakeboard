@@ -44,9 +44,15 @@ export interface Event {
     message:              EventMessage;
     transfer:             Transfer;
     delegate?:            Delegate;
+    unbond?:              Unbond;
     withdraw_rewards?:    WithdrawRewards;
     withdraw_commission?: WithdrawCommission;
-    unbond: 
+}
+
+export interface Unbond {
+    amount: string;
+    completion_time: string;
+    validator: string;
 }
 
 export interface Delegate {
