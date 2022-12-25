@@ -75,9 +75,6 @@ export const getStakerData = async (): Promise<StakerData> => {
     const allDelegationsOverTime = getDelegationsOverTime(allTx, atomToUAtom(INITIAL_ATOM_POWER))
     const allStakersOverTime  = getStakersOverTime(allTx)
 
-    console.log("All Tx: ", allTx[0])
-
-
     return {
         totalStakers: nonEmptyAddressesMap.size,
         shapeshiftStakers: nonEmptyShapeshiftAddressesMap.size,
