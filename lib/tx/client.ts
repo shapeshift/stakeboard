@@ -46,7 +46,7 @@ const getDelegateTx = (allEvents: EventBundle[]): ValidatorTx[] => {
     return {
       stakerAddr: evb.event.coin_spent.spender,
       validatorAddr: evb.event.delegate.validator,
-      amount: extractAmount(evb.event.coin_spent.spender),
+      amount: extractAmount(evb.event.coin_spent.amount),
       type: ValidatorTxType.Delegate,
       timestamp: evb.timestamp,
       memo: evb.memo,
@@ -67,7 +67,7 @@ const getUnbondTx = (allEvents: EventBundle[]): ValidatorTx[] => {
     return {
       stakerAddr: evb.event.coin_received.receiver,
       validatorAddr: evb.event.unbond.validator,
-      amount: extractAmount(evb.event.coin_received.receiver),
+      amount: extractAmount(evb.event.coin_received.amount),
       type: ValidatorTxType.Unbond,
       timestamp: evb.timestamp,
       memo: evb.memo,

@@ -43,7 +43,7 @@ const startHistorySync = async (redis: Redis) => {
   
     if (!(await isInitialSyncCompleted(redis))) {
       const unchainedTxResponse = await getTx(cursor);
-      if(unchainedTxResponse){
+      if(unchainedTxResponse !== undefined){
         if (unchainedTxResponse.txs.length < pageSize) {
           console.log(
             `Sync completed, last page size ${unchainedTxResponse.txs.length}`
@@ -59,6 +59,9 @@ const startHistorySync = async (redis: Redis) => {
           `Saved ${txStrings.length} txs, total at ${total}, moving cursor`
         );
         await syncHistoryLoop(redis);
+      }else{
+        console.log("Unchained returned invalid response, retrying sync")
+        await syncHistoryLoop(redis)
       }
     } else {
       console.log("Completed full history sync");
