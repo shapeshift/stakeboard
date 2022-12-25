@@ -1,0 +1,45 @@
+    {
+      "txid": "92216025047689C1515C889FE389DC8BF0E51A547F01CAFAB1EB9AF34222037B",
+      "blockHash": "448652A373C1976982EBC025D4DF63A7C324A57E299B06C0F0F530E273EDECFE",
+      "blockHeight": 9749097,
+      "timestamp": 1647272330,
+      "confirmations": 3148721,
+      "fee": { "amount": "694", "denom": "uatom" },
+      "gasUsed": "194366",
+      "gasWanted": "277516",
+      "index": 8,
+      "memo": "Compounded by ShapeShift DAO",
+      "value": "",
+      "messages": [],
+      "events": {
+        "0": {
+          "coin_received": {
+            "amount": "190234uatom",
+            "receiver": "cosmos1fl48vsnmsdzcv85q5d2q4z5ajdha8yu34mf0eh"
+          },
+          "coin_spent": {
+            "amount": "190234uatom",
+            "spender": "cosmos1u8fl0vnp8cp2a9yszgqaqd6gundlyvgyvm4hmd"
+          },
+          "delegate": {
+            "amount": "190234uatom",
+            "new_shares": "190234.000000000000000000",
+            "validator": "cosmosvaloper199mlc7fr6ll5t54w7tts7f4s0cvnqgc59nmuxf"
+          },
+          "message": {
+            "action": "/cosmos.authz.v1beta1.MsgExec",
+            "module": "staking",
+            "sender": "cosmos1u8fl0vnp8cp2a9yszgqaqd6gundlyvgyvm4hmd"
+          },
+          "transfer": {
+            "amount": "191150uatom",
+            "recipient": "cosmos1u8fl0vnp8cp2a9yszgqaqd6gundlyvgyvm4hmd",
+            "sender": "cosmos1jv65s3grqf6v6jl3dp4t6c9t9rk99cd88lyufl"
+          },
+          "withdraw_rewards": {
+            "amount": "191150uatom",
+            "validator": "cosmosvaloper199mlc7fr6ll5t54w7tts7f4s0cvnqgc59nmuxf"
+          }
+        }
+      }
+    },

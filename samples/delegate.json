@@ -1,0 +1,44 @@
+{
+    "txid": "E7A169C64E4BDF9A0B10E43A4A96CEAC9657EF167EBCF8D4DA87388B966C60BA",
+    "blockHash": "402F3F85643309EB52AB219E9AB3AC9889230848D65779F3D1BFB79A4CD4ECE6",
+    "blockHeight": 10656443,
+    "timestamp": 1653696869,
+    "confirmations": 2241316,
+    "fee": { "amount": "3500", "denom": "uatom" },
+    "gasUsed": "134229",
+    "gasWanted": "250000",
+    "index": 0,
+    "memo": "Delegated with ShapeShift",
+    "value": "",
+    "messages": [
+      {
+        "origin": "cosmos1xdscgrl2vr54ydc5u8pdes0042azg4g802gqhh",
+        "from": "cosmos1xdscgrl2vr54ydc5u8pdes0042azg4g802gqhh",
+        "to": "cosmosvaloper199mlc7fr6ll5t54w7tts7f4s0cvnqgc59nmuxf",
+        "type": "delegate",
+        "value": { "amount": "81081", "denom": "uatom" }
+      }
+    ],
+    "events": {
+      "0": {
+        "coin_received": {
+          "amount": "81081uatom",
+          "receiver": "cosmos1fl48vsnmsdzcv85q5d2q4z5ajdha8yu34mf0eh"
+        },
+        "coin_spent": {
+          "amount": "81081uatom",
+          "spender": "cosmos1xdscgrl2vr54ydc5u8pdes0042azg4g802gqhh"
+        },
+        "delegate": {
+          "amount": "81081uatom",
+          "new_shares": "81081.000000000000000000",
+          "validator": "cosmosvaloper199mlc7fr6ll5t54w7tts7f4s0cvnqgc59nmuxf"
+        },
+        "message": {
+          "action": "/cosmos.staking.v1beta1.MsgDelegate",
+          "module": "staking",
+          "sender": "cosmos1xdscgrl2vr54ydc5u8pdes0042azg4g802gqhh"
+        }
+      }
+    }
+  },

@@ -43,8 +43,16 @@ export interface Event {
     coin_spent:           CoinSpent;
     message:              EventMessage;
     transfer:             Transfer;
+    delegate?:            Delegate;
     withdraw_rewards?:    WithdrawRewards;
     withdraw_commission?: WithdrawCommission;
+    unbond: 
+}
+
+export interface Delegate {
+    amount:   string;
+    new_shares:   string;
+    validator:   string;
 }
 
 export interface CoinReceived {

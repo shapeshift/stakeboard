@@ -51,11 +51,11 @@ export const getStakerData = async (): Promise<StakerData> => {
 
     allTx.forEach(tx => {
         switch(tx.type) {
-            case ValidatorTxType.Stake:
-                handleStakeTx(addressStakedValueMap, tx)
+            case ValidatorTxType.Delegate:
+                handleDelegateTx(addressStakedValueMap, tx)
                 break;
-            case ValidatorTxType.Unstake:
-                handleUnstakeTx(addressStakedValueMap, tx)
+            case ValidatorTxType.Unbond:
+                handleUnbondTx(addressStakedValueMap, tx)
                 break;
         }
     })
@@ -87,7 +87,7 @@ export const getStakerData = async (): Promise<StakerData> => {
  }
 
 
-const handleStakeTx = (addressStakedValueMap: Map<string, DelegatorMapEntry>, tx: ValidatorTx) => {
+const handleDelegateTx = (addressStakedValueMap: Map<string, DelegatorMapEntry>, tx: ValidatorTx) => {
     if(addressStakedValueMap.has(tx.stakerAddr)){
         const current = addressStakedValueMap.get(tx.stakerAddr)
         current.value += tx.amount
@@ -108,14 +108,14 @@ const handleStakeTx = (addressStakedValueMap: Map<string, DelegatorMapEntry>, tx
 }
 
 const getDelegatorType = (tx: ValidatorTx) => {
-    if(tx.type == ValidatorTxType.Stake && delegateMemos.includes(tx.memo)){
+    if(tx.type == ValidatorTxType.Delegate && delegateMemos.includes(tx.memo)){
         return DelegatorType.Shapeshift
     }else{
         return DelegatorType.NonShapeshift
     }
 }
 
-const handleUnstakeTx = (addressStakedValueMap: Map<string, DelegatorMapEntry>, tx: ValidatorTx) => { 
+const handleUnbondTx = (addressStakedValueMap: Map<string, DelegatorMapEntry>, tx: ValidatorTx) => { 
     if(addressStakedValueMap.has(tx.stakerAddr)){
         const current = addressStakedValueMap.get(tx.stakerAddr)
         current.value -= tx.amount
@@ -137,7 +137,7 @@ const handleUnstakeTx = (addressStakedValueMap: Map<string, DelegatorMapEntry>, 
   
     return validatorTx.map(x => {
       const tmp = x.amount
-      if(x.type == ValidatorTxType.Stake){
+      if(x.type == ValidatorTxType.Delegate){
         totalValue = totalValue + tmp;
       }else{
         totalValue = totalValue - tmp;
@@ -161,7 +161,7 @@ const handleUnstakeTx = (addressStakedValueMap: Map<string, DelegatorMapEntry>, 
 
     shapeshiftTx.forEach(tx => {
         switch(tx.type) {
-            case ValidatorTxType.Stake:
+            case ValidatorTxType.Delegate:
                 if(shapeshiftAddressesMap.has(tx.stakerAddr)){
                     let current = shapeshiftAddressesMap.get(tx.stakerAddr)
                     current += tx.amount
@@ -175,7 +175,7 @@ const handleUnstakeTx = (addressStakedValueMap: Map<string, DelegatorMapEntry>, 
                     })
                 }
                 break;
-            case ValidatorTxType.Unstake:
+            case ValidatorTxType.Unbond:
                 if(shapeshiftAddressesMap.has(tx.stakerAddr)){
                     let current = shapeshiftAddressesMap.get(tx.stakerAddr)
                     current -= tx.amount

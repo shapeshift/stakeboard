@@ -18,7 +18,7 @@ export default async function handler(
   });
 
   const lastTxTimestamp = await redis.get(LAST_TX_TIMESTAMP);
-  const completed = await isInitialSyncCompleted(redis);
+  const initialSyncCompleted = await isInitialSyncCompleted(redis);
 
   runValidatorSync(redis);
 
@@ -26,7 +26,7 @@ export default async function handler(
   // Initial - when the DB is empty, we need to fetch all historical transactions starting from now till the first one (isInitialSyncCompleted)
   // New - Once we know that our data is valid until some recent point in time, we fetch only the new missing data until that moment (lastTxTimestamp)
 
-  if (!completed) {
+  if (!initialSyncCompleted) {
     runInitialSync(redis, lastTxTimestamp, res);
   } else {
     runNewSync(redis, Number(lastTxTimestamp), res);
