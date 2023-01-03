@@ -43,7 +43,7 @@ const startHistorySync = async (redis: Redis) => {
   
     if (!(await isInitialSyncCompleted(redis))) {
       const unchainedTxResponse = await getTx(cursor);
-      if(unchainedTxResponse !== undefined){
+      if(unchainedTxResponse.txs !== undefined){
         if (unchainedTxResponse.txs.length < pageSize) {
           console.log(
             `Sync completed, last page size ${unchainedTxResponse.txs.length}`
