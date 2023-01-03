@@ -16,8 +16,15 @@ The production setup (`docker-compose.yml`) consists of 3 components:
 For local dev, we only run the redis db via docker. The dev variant requires that you have [Unchained Cosmos Coinstack](https://github.com/shapeshift/unchained) running locally, but you can also use the public one from `.env.production`.
 
 `docker-compose -f docker-compose-dev.yaml up -d`
+
+Setup node.js:
 `npm i`
+
+Start the web app:
 `npm run dev`
+
+Start the sync manually (dev mode does not use syncer):
+`curl http://localhost:3000/api/sync`
 
 ## Release & Versioning
 
